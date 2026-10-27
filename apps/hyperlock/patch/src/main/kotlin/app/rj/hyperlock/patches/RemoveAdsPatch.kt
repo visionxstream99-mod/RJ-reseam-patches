@@ -16,6 +16,7 @@ private val bannerAdLayout = klass("com.applovin.mediation.BannerAdLayout")
 private val nativeAdLayout = klass("com.applovin.mediation.NativeAdLayout")
 private val interstitialAdManager = klass("com.applovin.mediation.InterstitialAdManager")
 private val adCallback = klass("com.applovin.mediation.InterstitialAdManager\$AdCallback")
+private val appOpenManager = klass("com.applovin.mediation.AppOpenManager")
 
 private val continueWithoutAd = method("HyperLock ad-unavailable callback") {
     inClass(adCallback)
@@ -25,9 +26,9 @@ private val continueWithoutAd = method("HyperLock ad-unavailable callback") {
 }
 
 /*
- * HyperLock 0.1.2 embeds a custom AppLovin BannerAdLayout that creates and loads
- * Google AdMob banners. The public loadAd(String) entry point is used by the
- * app's main, settings, gallery, splash, and lock-screen customization screens.
+ * Confirmed in HyperLock 0.1.2's base.dex:
+ * BannerAdLayout.loadAd(String), NativeAdLayout.loadAd(String), and the
+ * InterstitialAdManager load/show methods are present with these signatures.
  */
 private val loadBannerAd = method("HyperLock banner ad loader") {
     inClass(bannerAdLayout)
@@ -36,11 +37,6 @@ private val loadBannerAd = method("HyperLock banner ad loader") {
     returns(Type.Void)
 }
 
-/*
- * HyperLock's InterstitialAdManager wraps Google interstitial and rewarded-ad
- * loading/display. App screens call these methods to preload or show interstitials.
- * Match the stable owner and full parameter signatures, not obfuscated callers.
- */
 private val loadNativeAd = method("HyperLock native ad loader") {
     inClass(nativeAdLayout)
     name("loadAd")
@@ -88,9 +84,21 @@ private val showInterstitialWithoutCount = method("HyperLock uncounted interstit
     returns(Type.Void)
 }
 
+/*
+ * AppOpenManager is present in the supplied 0.1.2 base APK and implements
+ * ActivityLifecycleCallbacks. Prevent its resume hook from triggering
+ * app-open ads without touching Play Store validation or premium purchase logic.
+ */
+private val appOpenActivityResumed = method("HyperLock app-open ad lifecycle hook") {
+    inClass(appOpenManager)
+    name("onActivityResumed")
+    params("android.app.Activity")
+    returns(Type.Void)
+}
+
 val removeAds = patch("Remove ads") {
     description(
-        "Blocks HyperLock 0.1.2 banner, native, interstitial, and reward-fallback ad loading and display."
+        "Blocks HyperLock 0.1.2 banner, native, interstitial, and app-open ad entry points. Does not modify purchase or Play Store validation."
     )
     compatibleWith(HYPERLOCK)
 
@@ -119,5 +127,6 @@ val removeAds = patch("Remove ads") {
             }
             returnVoid()
         }
+        appOpenActivityResumed.before { returnVoid() }
     }
 }
