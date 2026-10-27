@@ -13,14 +13,14 @@ This file records the RJ patch work that can be substantiated from project histo
 
 ## Rebuild and release gate
 
-Before a patch is listed as downloadable:
+Before this patch is listed as downloadable:
 
-1. Recover or recreate its patch source against the exact target app build.
-2. Confirm unique patch IDs and the actual Reseam manifest.
+1. Recreate or recover its patch source against the exact target app build.
+2. Confirm the patch ID and actual Reseam manifest.
 3. Build using the Reseam workspace plugin and matching CLI version.
 4. Inspect the generated bundle and validate patch metadata.
 5. Apply it to a test APK and record the actual result.
 6. Sign with the intended release key; never commit the private key.
-7. Publish the tested `.reseam` artifact and matching source metadata, with accurate version notes.
+7. Publish the tested `.reseam` artifact with accurate version notes.
 
 Do not label a patch as working or released based on remembered descriptions alone.
