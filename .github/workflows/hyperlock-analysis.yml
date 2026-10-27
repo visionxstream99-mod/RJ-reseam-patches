@@ -29,14 +29,24 @@ jobs:
           url="https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/download/apk/HyperLock-Screen-AOD_0.1.2_apkcube.zip"
           curl -fL --retry 3 "$url" -o "$RUNNER_TEMP/hyperlock.zip"
           echo "63aec7722410be0f3eb00fbdc54f54df2b986777de2cdd1d482c759ade02876b  $RUNNER_TEMP/hyperlock.zip" | sha256sum -c -
+          echo "Outer ZIP contents:"
+          unzip -l "$RUNNER_TEMP/hyperlock.zip" | head -n 80
           mkdir -p "$RUNNER_TEMP/hyperlock-input"
           unzip -q "$RUNNER_TEMP/hyperlock.zip" -d "$RUNNER_TEMP/hyperlock-input"
-          for depth in 1 2; do
+          for depth in 1 2 3; do
             while IFS= read -r -d '' archive; do
-              out="$archive.expanded"
-              if [ ! -d "$out" ]; then mkdir -p "$out"; unzip -oq "$archive" -d "$out" || true; fi
-            done < <(find "$RUNNER_TEMP/hyperlock-input" -type f \( -iname '*.xapk' -o -iname '*.apks' -o -iname '*.zip' \) ! -path '*/.expanded/*' -print0)
+              if file -b "$archive" | grep -qi 'Zip archive data'; then
+                out="$archive.expanded"
+                if [ ! -d "$out" ]; then
+                  echo "Expanding nested archive: $archive"
+                  mkdir -p "$out"
+                  unzip -oq "$archive" -d "$out" || true
+                fi
+              fi
+            done < <(find "$RUNNER_TEMP/hyperlock-input" -type f ! -iname '*.apk' -print0)
           done
+          echo "Extracted file inventory:"
+          find "$RUNNER_TEMP/hyperlock-input" -maxdepth 5 -type f -printf '%p (%s bytes)\n' | head -n 120
           find "$RUNNER_TEMP/hyperlock-input" -type f -iname '*.apk' -print | sort | tee "$RUNNER_TEMP/apks.txt"
           test -s "$RUNNER_TEMP/apks.txt"
       - name: Decompile APKs
