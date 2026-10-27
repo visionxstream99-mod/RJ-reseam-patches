@@ -24,8 +24,8 @@ A focused collection of patches for Android apps. Each patch has a specific targ
 |---|---|---|---|
 | **Advanced Download Manager** | Remove ads | `com.dv.adm` · 7.6 (70620) | Built successfully; APK and runtime testing still needed |
 | **Anixart** | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Includes separate options for banner ads, interstitial ads, and Kodik prompts; APK and runtime testing still needed |
-| **HyperLock Screen & AOD** | Remove ads | `com.appiolab.hyperlockscreenos` · 0.1.2 | Hides banner/native views and blocks interstitial/app-open paths; dry-run and runtime testing pending |
-| **HyperLock Screen & AOD** | Customize HyperLock | `com.appiolab.hyperlockscreenos` · 0.1.2 | Optional 12-hour clock, depth-effect, and parallax-animation controls; dry-run and runtime testing pending |
+| **HyperLock Screen & AOD** | Remove ads | `com.appiolab.hyperlockscreenos` · 0.1.2 | Exact-target dry-run and patch application pass; device runtime testing pending |
+| **HyperLock Screen & AOD** | Customize HyperLock | `com.appiolab.hyperlockscreenos` · 0.1.2 | Optional 12-hour clock, depth-effect, and parallax-animation controls; dry-run passes, runtime testing pending |
 
 Anixart Lite is **not** included in the target listed above. HyperLock is targeted at version 0.1.2 only. Don't assume other app versions are compatible.
 
@@ -45,7 +45,7 @@ You can also get the signed bundle and catalogue from the [latest release](https
 
 A successful build means the patch bundle compiles. It does **not** prove that a patch works with a particular APK or behaves correctly at runtime.
 
-The latest HyperLock PR branch build has passed bundle build and patch-ID validation. The listed patches still need dry-run checks against their exact target APKs and hands-on testing before their compatibility can be called verified. Treat them as **experimental** until those checks are complete.
+The HyperLock PR branch has passed bundle build and patch-ID validation, exact-target dry-runs, and actual patch application against the supplied split APK set. Hands-on Android testing is still pending, and ADM/Anixart have not yet passed exact-target dry-runs. Treat all patches as **experimental** until runtime checks are complete.
 
 If something fails, open an [issue](https://github.com/visionxstream99-mod/RJ-reseam-patches/issues) and include:
 
