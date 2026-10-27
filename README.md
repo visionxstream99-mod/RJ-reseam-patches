@@ -95,7 +95,7 @@ Modules are configured by the Reseam workspace Gradle plugin. See the [Reseam au
 
 ## Contribution guidelines
 
-Before submitting a patch, provide the target app name, package ID, exact version, patch ID, intended behavior, and test results. See [CONTRIBUTING.md](CONTRIBUTING.md) for the checklist and release expectations.
+Before submitting a patch, provide the target app name, package ID, exact version, unique patch ID, intended behavior, test results, known limitations, and required upstream notices.
 
 ## Security and trust
 
