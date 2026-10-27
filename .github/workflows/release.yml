@@ -1,0 +1,43 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ${{ vars.RUNNER || 'ubuntu-latest' }}
+    env:
+      RESEAM_BIN: ${{ github.workspace }}/engine/reseam
+      RESEAM_BUNDLE_KEY: ${{ github.workspace }}/bundle-signing.key
+      RELEASE_TOKEN: ${{ github.token }}
+    steps:
+      # Full history, so the release notes can list the commits since the previous tag.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Install the Reseam CLI and signing key
+        run: |
+          mkdir -p engine
+          version=$(sed -n 's/.*id("app.reseam.workspace") version "\(.*\)".*/\1/p' settings.gradle.kts)
+          curl -fsSL -o engine/reseam https://cdn.reseam.app/engine/v$version/reseam-linux-x64
+          chmod +x engine/reseam
+          echo "${{ secrets.BUNDLE_SIGNING_KEY_B64 }}" | base64 -d > bundle-signing.key
+
+      - name: Build the bundle
+        run: ./gradlew bundle -PreleaseTag=$GITHUB_REF_NAME --no-daemon
+
+      - name: Publish the release
+        run: engine/reseam release patches build/reseam/*.reseam --tag $GITHUB_REF_NAME
