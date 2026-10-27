@@ -1,6 +1,6 @@
 [bundle]
 name = "rj-reseam-patches"
 author = "RJ"
-description = "RJ's ADM and Anixart patches for Reseam"
+description = "RJ's ADM, Anixart, and HyperLock patches for Reseam"
 license = "AGPL-3.0-or-later"
 format_version = 1
