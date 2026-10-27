@@ -1,6 +1,6 @@
 # RJ Patch Catalogue
 
-This file records the RJ patch work that can be substantiated from project history. It is not itself an installable patch bundle.
+This catalogue records the confirmed RJ patch work. It is documentation, not an installable patch bundle.
 
 ## ADM — Remove Ads
 
@@ -9,11 +9,11 @@ This file records the RJ patch work that can be substantiated from project histo
 - Target version: ADM 7.6, build 70620
 - Intended behavior: remove supported banner/interstitial ad entry points associated with AdMob, Admax, and AppBrain.
 - Historical test status: a prior build was applied successfully to a test APK; the maintainer reported that ads were gone.
-- Current artifact status: the prior signed `.reseam` file and its matching signing key have not been recovered in this repository session. Do not treat this entry as a current downloadable release.
+- Current artifact status: the old signed `.reseam` file and its matching signing key have not been recovered in this session. This entry is not a current downloadable release.
 
 ## Rebuild and release gate
 
-Before this patch is listed as downloadable:
+Before the patch is listed as downloadable:
 
 1. Recreate or recover its patch source against the exact target app build.
 2. Confirm the patch ID and actual Reseam manifest.
