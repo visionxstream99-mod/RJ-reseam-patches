@@ -44,11 +44,15 @@ jobs:
           set -euo pipefail
           bundle="build/reseam/rj-reseam-patches.reseam"
           test -s "$bundle"
-          pubkey="$(unzip -p "$bundle" manifest.pubkey | od -An -v -tx1 | tr -d ' \n')"
+          pubkey="$(unzip -p "$bundle" manifest.pubkey | od -An -v -tx1 | tr -d ' \\n')"
           test "${#pubkey}" -eq 64
           "$RESEAM_BIN" bundle list "$bundle" --trust "$pubkey" | tee "$RUNNER_TEMP/patch-list.txt"
           grep -Fq 'app.rj.adm.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
           grep -Fq 'app.rj.anixart.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
+          grep -Fq 'app.rj.pinterest.patches.removeAdvertisingIdPermission' "$RUNNER_TEMP/patch-list.txt"
+          grep -Fq 'app.rj.pinterest.patches.optOutGoogleAnalytics' "$RUNNER_TEMP/patch-list.txt"
+          grep -Fq 'app.rj.pinterest.patches.disablePrivacySandboxAdServices' "$RUNNER_TEMP/patch-list.txt"
+          grep -Fq 'app.rj.pinterest.patches.disableGoogleEngageReceiver' "$RUNNER_TEMP/patch-list.txt"
 
       - name: Preserve build output when validation fails
         if: always()
