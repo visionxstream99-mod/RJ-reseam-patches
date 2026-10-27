@@ -23,7 +23,7 @@ A community patch bundle maintained by **RJ** — with version-aware patches, cl
 
 The implementations are in [PATCHES.md](PATCHES.md). The Anixart patch has separate options for banner ads, interstitial ads, and Kodik pre-roll behavior. It targets the `com.swiftsoft.anixartd` package only; Anixart Lite and other versions are not claimed as compatible.
 
-**No current signed release is published.** The recovered ADM artifact was built for Reseam engine 0.29.0, while this repository uses workspace plugin 0.32.0. It must be rebuilt and tested rather than reused unchanged.
+**No current signed release is published yet.** The permanent release signer's public key is `d16834e29b664ab59f5cc8c0b2ce47dfe3620fe8debeb0ddf74d673a68136294`. The recovered ADM artifact was built for Reseam engine 0.29.0, while this repository uses workspace plugin 0.32.0. It must be rebuilt and tested rather than reused unchanged.
 
 ## Add the source
 
@@ -58,11 +58,11 @@ The generated artifact is written under `build/reseam/`. The [validation workflo
 
 ### Publish a release
 
-The GitHub Actions workflow in `.github/workflows/release.yml` builds and publishes on version tags matching `v*`.
+The GitHub Actions workflow in `.github/workflows/release.yml` supports version tags matching `v*` and a manual run from the Actions tab.
 
-1. Add the base64-encoded release signing key as the repository Actions secret `BUNDLE_SIGNING_KEY_B64`.
-2. Confirm the build, target matching, patch metadata, and bundle contents before releasing.
-3. Create and push a version tag, for example `v0.1.0`, only when the bundle is ready for users.
+1. Open [repository Actions secrets](https://github.com/visionxstream99-mod/RJ-reseam-patches/settings/secrets/actions/new) and create a repository secret named `BUNDLE_SIGNING_KEY_B64`. Its value must be the single base64 line in the private key package's `BUNDLE_SIGNING_KEY_B64.txt` file.
+2. Open **Actions → release → Run workflow**, enter `v0.1.0`, and run it. The workflow builds and signs the bundle with the permanent key, then publishes the release and `patches.json`.
+3. Confirm the build, target matching, patch metadata, and bundle contents before sharing the source with users.
 
 Never publish an untested artifact as stable. Release notes should state target app versions, patch IDs, behavior changes, known issues, and verification status.
 
