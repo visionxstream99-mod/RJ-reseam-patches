@@ -38,7 +38,7 @@ Each patch is pinned to Pinterest 14.42.0 and checks its expected manifest targe
 
 ## Build status and deferred work
 
-The patch sources compiled with Reseam 0.32.0, and CI generated a signed validation bundle whose manifest contains all four Pinterest patch IDs. The bundle has not yet been applied to this exact APKM, and no runtime testing has been performed.
+The patch sources compiled with Reseam 0.32.0, and CI generated a signed validation bundle whose manifest contains all four Pinterest patch IDs. The exact-target apply test remains blocked because the repository's current `apk` release URL points to an apktool-decoded project directory rather than this uploaded APKM or its `base.apk`. The uploaded APKM was inspected locally; the release asset must be replaced with a real APKM/base APK before CI can apply these patches to the exact target. No runtime testing has been performed.
 
 - **Google Ads SDK metadata removal:** not in the first pass. The app has a Google Ads application ID and may invoke the SDK. Removing its manifest ID without proving the startup path could introduce a runtime exception.
 - **Hide promoted pins / hide ad views:** requires exact-version bytecode fingerprint validation and navigation/runtime tests.
