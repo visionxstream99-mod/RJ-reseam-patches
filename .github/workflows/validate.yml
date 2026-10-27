@@ -29,7 +29,7 @@ jobs:
           version="$(sed -n 's/.*id("app.reseam.workspace") version "\(.*\)".*/\1/p' settings.gradle.kts)"
           test -n "$version"
           mkdir -p "$RUNNER_TEMP/reseam"
-          curl -fsSL -o "$RUNNER_TEMP/reseam/reseam" "https://cdn.reseam.app/engine/v${version}/reseam-linux-x64"
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/reseam/reseam" "https://cdn.reseam.app/engine/v${version}/reseam-linux-x64"
           chmod +x "$RUNNER_TEMP/reseam/reseam"
           "$RUNNER_TEMP/reseam/reseam" bundle keygen --out "$RUNNER_TEMP/reseam/test-bundle-signing.key"
           echo "RESEAM_BIN=$RUNNER_TEMP/reseam/reseam" >> "$GITHUB_ENV"
@@ -38,19 +38,45 @@ jobs:
       - name: Build the signed bundle with a one-run test key
         run: ./gradlew bundle --no-daemon
 
-      - name: Inspect bundle and assert required patch IDs
+      - name: Verify signed bundle manifest and required patch IDs
         shell: bash
         run: |
           set -euo pipefail
           bundle="build/reseam/rj-reseam-patches.reseam"
           test -s "$bundle"
-          pubkey="$(unzip -p "$bundle" manifest.pubkey | od -An -v -tx1 | tr -d ' \n')"
+          pubkey="$(python -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("manifest.pubkey").hex())' "$bundle")"
           test "${#pubkey}" -eq 64
-          "$RESEAM_BIN" bundle list "$bundle" --trust "$pubkey" | tee "$RUNNER_TEMP/patch-list.txt"
-          grep -Fq 'app.rj.adm.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
-          grep -Fq 'app.rj.anixart.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
+          python - "$bundle" <<'PY'
+          import sys, tomllib, zipfile
+          path = sys.argv[1]
+          with zipfile.ZipFile(path) as archive:
+              manifest = tomllib.loads(archive.read("manifest.toml").decode("utf-8"))
+          expected = {
+              "app.rj.adm.patches.removeAds",
+              "app.rj.anixart.patches.removeAds",
+              "app.rj.pinterest.patches.removeAdvertisingIdPermission",
+              "app.rj.pinterest.patches.optOutGoogleAnalytics",
+              "app.rj.pinterest.patches.disablePrivacySandboxAdServices",
+              "app.rj.pinterest.patches.disableGoogleEngageReceiver",
+          }
+          actual = {patch["id"] for patch in manifest.get("patches", [])}
+          missing = expected - actual
+          if missing:
+              raise SystemExit("Missing patch IDs: " + ", ".join(sorted(missing)))
+          print("Verified patch IDs:")
+          for patch_id in sorted(expected):
+              print("  " + patch_id)
+          PY
+          "$RESEAM_BIN" bundle list "$bundle" --trust "$pubkey"
 
-      - name: Preserve build output when validation fails
+      - name: Report exact-target test limitation
+        if: success()
+        shell: bash
+        run: |
+          echo 'Source compilation and bundle manifest checks passed.'
+          echo 'Exact-target application is not run in this workflow: the existing GitHub release ZIP is an apktool-decoded project directory, not the uploaded APKM or a raw base.apk.'
+          echo 'See docs/PINTEREST-14.42.0.md for the verified target APKM checksum and the remaining apply/runtime test gate.'
+      - name: Preserve diagnostics when validation fails
         if: always()
         uses: actions/upload-artifact@v4
         with:
