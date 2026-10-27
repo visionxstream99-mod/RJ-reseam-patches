@@ -34,7 +34,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/hyperlock-input"
           unzip -q "$RUNNER_TEMP/hyperlock.zip" -d "$RUNNER_TEMP/hyperlock-input"
           for depth in 1 2 3; do
-            find "$RUNNER_TEMP/hyperlock-input" -type f ! -iname '*.apk' -print0 > "$RUNNER_TEMP/archive-list-$depth.bin"
+            find "$RUNNER_TEMP/hyperlock-input" -type f \( -iname '*.zip' -o -iname '*.xapk' -o -iname '*.apks' -o -iname '*.apkcube' \) ! -path '*.expanded/*' -print0 > "$RUNNER_TEMP/archive-list-$depth.bin"
             while IFS= read -r -d '' archive; do
               if file -b "$archive" | grep -qi 'Zip archive data'; then
                 out="$archive.expanded"
