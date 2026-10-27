@@ -68,6 +68,7 @@ private val kodikAdvertEnded = method("Anixart Kodik ad completion callback") {
 
 private val kodikLayoutInflater = kodikOnCreate.point("Kodik ad activity layout setup") {
     invokeVirtual {
+        owner("android.app.Activity")
         name("getLayoutInflater")
         params()
         returns("android.view.LayoutInflater")
@@ -92,6 +93,7 @@ private val alwaysTruePreference = anixartHooks.static(
 private val kodikShow = method("Anixart Kodik playback launch") {
     inClass(episodesFragment)
     name("onShowKodikAd")
+    paramCount(3)
     returns(Type.Void)
 }
 
