@@ -14,6 +14,14 @@ private val HYPERLOCK = CompatiblePackage(
 
 private val bannerAdLayout = klass("com.applovin.mediation.BannerAdLayout")
 private val interstitialAdManager = klass("com.applovin.mediation.InterstitialAdManager")
+private val adCallback = klass("com.applovin.mediation.InterstitialAdManager$AdCallback")
+
+private val continueWithoutAd = method("HyperLock ad-unavailable callback") {
+    inClass(adCallback)
+    name("c")
+    params()
+    returns(Type.Void)
+}
 
 /*
  * HyperLock 0.1.2 embeds a custom AppLovin BannerAdLayout that creates and loads
@@ -81,8 +89,26 @@ val removeAds = patch("Remove ads") {
     execute {
         loadBannerAd.before { returnVoid() }
         loadInterstitialAd.before { returnVoid() }
-        showInterstitialWithCount.before { returnVoid() }
-        showInterstitialWithRewardFallback.before { returnVoid() }
-        showInterstitialWithoutCount.before { returnVoid() }
+        showInterstitialWithCount.before {
+            val callback = param(2)
+            whenNotNull(callback) {
+                callback.call(continueWithoutAd)
+            }
+            returnVoid()
+        }
+        showInterstitialWithRewardFallback.before {
+            val callback = param(2)
+            whenNotNull(callback) {
+                callback.call(continueWithoutAd)
+            }
+            returnVoid()
+        }
+        showInterstitialWithoutCount.before {
+            val callback = param(2)
+            whenNotNull(callback) {
+                callback.call(continueWithoutAd)
+            }
+            returnVoid()
+        }
     }
 }
