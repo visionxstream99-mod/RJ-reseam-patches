@@ -24,8 +24,9 @@ A focused collection of patches for Android apps. Each patch has a specific targ
 |---|---|---|---|
 | **Advanced Download Manager** | Remove ads | `com.dv.adm` · 7.6 (70620) | Built successfully; APK and runtime testing still needed |
 | **Anixart** | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Includes separate options for banner ads, interstitial ads, and Kodik prompts; APK and runtime testing still needed |
+| **HyperLock Screen & AOD** | Remove ads | `com.appiolab.hyperlockscreenos` · 0.1.2 | Banner/native/interstitial paths identified; target dry-run and runtime test pending |
 
-Anixart Lite is **not** included in the target listed above. Don't assume other app versions are compatible.
+Anixart Lite is **not** included in the target listed above. HyperLock is targeted at version 0.1.2 only. Don't assume other app versions are compatible.
 
 Patch IDs, implementation notes, and current verification details are documented in [PATCHES.md](PATCHES.md).
 
@@ -85,6 +86,8 @@ The release workflow uses the repository secret `BUNDLE_SIGNING_KEY_B64`. Keep t
 manifest.toml                           Bundle metadata
 apps/adm/patch/                         ADM patch source
 apps/anixart/patch/                     Anixart patch source
+apps/hyperlock/patch/                   HyperLock Remove Ads source
+apps/hyperlock/README.md                HyperLock target notes
 apps/anixart/extensions/anixart/         Anixart helper hooks
 apps/anixart/LICENSE                    Anixart patch license
 apps/anixart/README.md                  Anixart notes and attribution
