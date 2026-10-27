@@ -18,7 +18,7 @@ permissions:
 jobs:
   build-and-inspect:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,6 +54,31 @@ jobs:
           grep -Fq 'app.rj.adm.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
           grep -Fq 'app.rj.anixart.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
           grep -Fq 'app.rj.hyperlock.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
+      - name: Rebuild supplied HyperLock archive and run selector dry-run
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/download/apk/HyperLock-Screen-AOD_0.1.2_apkcube.zip"
+          curl -fL --retry 2 "$url" -o "$RUNNER_TEMP/hyperlock-apkcube.zip"
+          echo "63aec7722410be0f3eb00fbdc54f54df2b986777de2cdd1d482c759ade02876b  $RUNNER_TEMP/hyperlock-apkcube.zip" | sha256sum -c -
+          sudo apt-get update -qq
+          sudo apt-get install -y apktool
+          mkdir -p "$RUNNER_TEMP/hyperlock-source"
+          unzip -q "$RUNNER_TEMP/hyperlock-apkcube.zip" -d "$RUNNER_TEMP/hyperlock-source"
+          decoded="$RUNNER_TEMP/hyperlock-source/HyperLock-Screen-AOD_0.1.2_apkcube"
+          test -f "$decoded/apktool.yml"
+          apktool b "$decoded" -o "$RUNNER_TEMP/hyperlock-rebuilt.apk"
+          "$RESEAM_BIN" info "$RUNNER_TEMP/hyperlock-rebuilt.apk" | tee "$RUNNER_TEMP/hyperlock-apk-info.txt"
+          grep -Fq 'com.appiolab.hyperlockscreenos' "$RUNNER_TEMP/hyperlock-apk-info.txt"
+          bundle="build/reseam/rj-reseam-patches.reseam"
+          pubkey="$(unzip -p "$bundle" manifest.pubkey | od -An -v -tx1 | tr -d ' \n')"
+          "$RESEAM_BIN" patch "$RUNNER_TEMP/hyperlock-rebuilt.apk" \
+            --bundle "$bundle" \
+            --trust "$pubkey" \
+            --disable app.rj.adm.patches.removeAds \
+            --disable app.rj.anixart.patches.removeAds \
+            --enable app.rj.hyperlock.patches.removeAds \
+            --dry-run
       - name: Preserve build output for debugging
         if: always()
         uses: actions/upload-artifact@v4
