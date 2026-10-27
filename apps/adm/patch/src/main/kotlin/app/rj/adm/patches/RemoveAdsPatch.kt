@@ -1,10 +1,11 @@
 package app.rj.adm.patches
 
+import app.reseam.patch.CompatiblePackage
 import app.reseam.patch.Type
 import app.reseam.patch.method
 import app.reseam.patch.patch
 
-private val ADM = "com.dv.adm"("7.6")
+private val ADM = CompatiblePackage("com.dv.adm", listOf("7.6"))
 
 /*
  * Reconstructed from the previously recovered RJ bundle's compiled class.
