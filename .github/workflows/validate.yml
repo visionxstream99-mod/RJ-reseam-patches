@@ -69,72 +69,56 @@ jobs:
           PY
           "$RESEAM_BIN" bundle list "$bundle" --trust "$pubkey"
 
-      - name: Fetch Pinterest 14.42.0 target APK set
+      - name: Fetch Pinterest 14.42.0 APKM target
         shell: bash
         run: |
           set -euo pipefail
           target_zip="$RUNNER_TEMP/pinterest-release.zip"
           target_apkm="$RUNNER_TEMP/pinterest-14.42.0.apkm"
-          target_dir="$RUNNER_TEMP/pinterest-14.42.0"
           curl -fL --retry 3 --retry-delay 2 -o "$target_zip" "https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/download/apk/com.pinterest_14.42.0-14428010_1arch_2dpi_23lang_ea20959c6cbd20864956767ff91a0a32_apkmirror.com.zip"
-          python - "$target_zip" "$target_apkm" "$target_dir" <<'PY'
-          import hashlib, os, sys, zipfile
-          source, apkm_path, dest = sys.argv[1:4]
-          os.makedirs(dest, exist_ok=True)
+          python - "$target_zip" "$target_apkm" <<'PY'
+          import hashlib, sys, zipfile
+          source, dest = sys.argv[1:3]
           with zipfile.ZipFile(source) as archive:
+              nested = [name for name in archive.namelist() if name.lower().endswith('.apkm') and not name.endswith('/')]
+              if len(nested) != 1:
+                  raise SystemExit(f'Expected one nested .apkm in release ZIP, found {len(nested)}')
+              with archive.open(nested[0]) as src, open(dest, 'wb') as out:
+                  while chunk := src.read(1024 * 1024): out.write(chunk)
+          with open(dest, 'rb') as file:
+              digest = hashlib.sha256(file.read()).hexdigest()
+          expected = 'a67f9078c5924fcd334616863d46ced4c686d029a0f8341a7ae64645c4196e2e'
+          print('Nested APKM SHA-256:', digest)
+          if digest != expected:
+              raise SystemExit('Nested APKM does not match the uploaded target file checksum')
+          with zipfile.ZipFile(dest) as archive:
               names = archive.namelist()
-              nested = [n for n in names if n.lower().endswith('.apkm') and not n.endswith('/')]
-              if len(nested) == 1:
-                  with archive.open(nested[0]) as src, open(apkm_path, 'wb') as out:
-                      while chunk := src.read(1024 * 1024): out.write(chunk)
-              elif any(os.path.basename(n) == 'base.apk' for n in names):
-                  apkm_path = source
-              else:
-                  raise SystemExit('Release ZIP has neither one nested APKM nor a direct base.apk; entries: ' + repr(names[:30]))
-          if apkm_path != source:
-              digest = hashlib.sha256(open(apkm_path, 'rb').read()).hexdigest()
-              expected = 'a67f9078c5924fcd334616863d46ced4c686d029a0f8341a7ae64645c4196e2e'
-              print('Nested APKM SHA-256:', digest)
-              if digest != expected:
-                  raise SystemExit('Nested APKM does not match the uploaded source file checksum')
-          with zipfile.ZipFile(apkm_path) as archive:
-              names = archive.namelist()
-              apks = [n for n in names if n.lower().endswith('.apk') and not n.endswith('/')]
-              bases = [n for n in apks if os.path.basename(n) == 'base.apk']
-              if len(bases) != 1:
-                  raise SystemExit(f'Expected one base.apk in APKM, found {len(bases)}; entries: {names[:30]}')
-              for name in apks:
-                  basename = os.path.basename(name)
-                  path = os.path.join(dest, basename)
-                  if os.path.exists(path): raise SystemExit('Duplicate APK basename: ' + basename)
-                  with archive.open(name) as src, open(path, 'wb') as out:
-                      while chunk := src.read(1024 * 1024): out.write(chunk)
-          print('Extracted target APKs:', ', '.join(sorted(os.listdir(dest))))
-          echo_target="$dest/base.apk"
-          test -s "$echo_target"
-          echo "PINTEREST_TARGET_DIR=$dest" >> "$GITHUB_ENV"
-          echo "PINTEREST_TARGET_APKM=$apkm_path" >> "$GITHUB_ENV"
-      - name: Apply Pinterest patches to exact target and validate output
+              if not any(name == 'base.apk' for name in names):
+                  raise SystemExit('Nested APKM is missing base.apk')
+          print('Exact uploaded Pinterest APKM verified')
+          PY
+          echo "PINTEREST_TARGET_APKM=$target_apkm" >> "$GITHUB_ENV"
+
+      - name: Dry-run and apply Pinterest patches to exact target
         shell: bash
         run: |
           set -euo pipefail
           bundle="build/reseam/rj-reseam-patches.reseam"
           pubkey="$(python -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("manifest.pubkey").hex())' "$bundle")"
-          base="$PINTEREST_TARGET_DIR/base.apk"
           output="$RUNNER_TEMP/patched-pinterest-14.42.0"
-          "$RESEAM_BIN" info "$base"
-          mapfile -t splits < <(find "$PINTEREST_TARGET_DIR" -maxdepth 1 -type f -name '*.apk' ! -name 'base.apk' | sort)
-          args=("$RESEAM_BIN" patch "$base" --bundle "$bundle" --trust "$pubkey" --output-dir "$output")
+          args=("$RESEAM_BIN" patch "$PINTEREST_TARGET_APKM" --bundle "$bundle" --trust "$pubkey" --preset none)
           args+=(--enable app.rj.pinterest.patches.removeAdvertisingIdPermission)
           args+=(--enable app.rj.pinterest.patches.optOutGoogleAnalytics)
           args+=(--enable app.rj.pinterest.patches.disablePrivacySandboxAdServices)
           args+=(--enable app.rj.pinterest.patches.disableGoogleEngageReceiver)
-          for split in "${splits[@]}"; do args+=(--split "$split"); done
-          "${args[@]}"
-          test -s "$output/base.apk"
-          "$RESEAM_BIN" info "$output/base.apk"
-          echo "Applied four Pinterest patches to the inspected 14.42.0 base APK and created the split output set."
-
+          echo 'Validating selected patches without modifying the APKM...'
+          "${args[@]}" --dry-run
+          echo 'Dry run passed; applying the four selected patches...'
+          "${args[@]}" --output-dir "$output"
+          test -d "$output"
+          find "$output" -maxdepth 1 -type f -name '*.apk' -print
+          find "$output" -maxdepth 1 -type f -name '*.apk' -print -quit | grep -q .
+          echo "Patched APK set created at $output"
       - name: Preserve diagnostics when validation fails
         if: always()
         uses: actions/upload-artifact@v4
