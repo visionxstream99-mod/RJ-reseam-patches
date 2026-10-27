@@ -1,0 +1,62 @@
+name: validate-patches
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Install matching Reseam CLI and temporary signing key
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(sed -n 's/.*id("app.reseam.workspace") version "\(.*\)".*/\1/p' settings.gradle.kts)"
+          test -n "$version"
+          mkdir -p "$RUNNER_TEMP/reseam"
+          curl -fsSL -o "$RUNNER_TEMP/reseam/reseam" "https://cdn.reseam.app/engine/v${version}/reseam-linux-x64"
+          chmod +x "$RUNNER_TEMP/reseam/reseam"
+          "$RUNNER_TEMP/reseam/reseam" bundle keygen --out "$RUNNER_TEMP/reseam/test-bundle-signing.key"
+          echo "RESEAM_BIN=$RUNNER_TEMP/reseam/reseam" >> "$GITHUB_ENV"
+          echo "RESEAM_BUNDLE_KEY=$RUNNER_TEMP/reseam/test-bundle-signing.key" >> "$GITHUB_ENV"
+
+      - name: Build the signed bundle with a one-run test key
+        run: ./gradlew bundle --no-daemon
+
+      - name: Inspect bundle and assert required patch IDs
+        shell: bash
+        run: |
+          set -euo pipefail
+          bundle="build/reseam/rj-reseam-patches.reseam"
+          test -s "$bundle"
+          pubkey="$(unzip -p "$bundle" manifest.pubkey | od -An -v -tx1 | tr -d ' \n')"
+          test "${#pubkey}" -eq 64
+          "$RESEAM_BIN" bundle list "$bundle" --trust "$pubkey" | tee "$RUNNER_TEMP/patch-list.txt"
+          grep -Fq 'app.rj.adm.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
+          grep -Fq 'app.rj.anixart.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
+
+      - name: Preserve build output when validation fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reseam-build-outputs
+          path: |
+            build/reports/
+            build/reseam/
+          if-no-files-found: ignore
+          retention-days: 7
