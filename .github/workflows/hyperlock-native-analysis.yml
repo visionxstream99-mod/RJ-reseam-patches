@@ -1,0 +1,124 @@
+name: inspect-hyperlock-native-ad
+
+on:
+  push:
+    branches: [work/hyperlock-analysis]
+    paths:
+      - ".github/workflows/hyperlock-native-analysis.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/hyperlock-analysis
+      - name: Download and verify HyperLock archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/download/apk/HyperLock-Screen-AOD_0.1.2_apkcube.zip"
+          curl -fL --retry 2 "$url" -o "$RUNNER_TEMP/hyperlock.zip"
+          echo "63aec7722410be0f3eb00fbdc54f54df2b986777de2cdd1d482c759ade02876b  $RUNNER_TEMP/hyperlock.zip" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/hyperlock-input"
+          unzip -q "$RUNNER_TEMP/hyperlock.zip" -d "$RUNNER_TEMP/hyperlock-input"
+      - name: Inspect native and rewarded ad paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - "$RUNNER_TEMP/hyperlock-input/HyperLock-Screen-AOD_0.1.2_apkcube" analysis/hyperlock-native-ad-analysis.md <<'PY'
+          import re, sys
+          from pathlib import Path
+          root = Path(sys.argv[1])
+          output = Path(sys.argv[2])
+          smali = sorted(p for p in root.glob("smali*/**/*.smali") if p.is_file())
+          pattern = re.compile(
+              r'getAdmobNativeCommonAdUnit|'
+              r'Lcom/google/android/gms/ads/nativead/NativeAd;->|'
+              r'Lcom/google/android/gms/ads/AdLoader;->|'
+              r'Lcom/google/android/gms/ads/formats/NativeAd;->|'
+              r'NativeAdView|AdLoader\$Builder|'
+              r'loadNativeAd|NativeAdOptions',
+              re.I
+          )
+          sdk_markers = (
+              "/com/google/android/gms/ads/", "/com/google/ads/",
+              "/com/applovin/", "/com/google/android/gms/internal/"
+          )
+          lines = [
+              "HyperLock 0.1.2 — native/rewarded ad path inspection",
+              "",
+              "Inspection only; this file is not an installable patch.",
+              "",
+          ]
+          hits = 0
+          class_hits = 0
+          for p in smali:
+              text = p.read_text(errors="ignore").splitlines()
+              current = None
+              matched_method = []
+              class_desc = next((x.strip() for x in text if x.strip().startswith(".class ")), "(class unknown)")
+              blocks = []
+              for n, line in enumerate(text, 1):
+                  if line.strip().startswith(".method "):
+                      if current is not None:
+                          blocks.append(current)
+                      current = [(n, line)]
+                  elif current is not None:
+                      current.append((n, line))
+                      if line.strip() == ".end method":
+                          blocks.append(current)
+                          current = None
+              if current is not None:
+                  blocks.append(current)
+              class_match = False
+              for block in blocks:
+                  selected = [(n, line.strip()) for n, line in block if pattern.search(line)]
+                  if not selected:
+                      continue
+                  class_match = True
+                  hits += len(selected)
+                  method = block[0][1].strip()
+                  if "/com/google/android/gms/ads/" in "/" + p.relative_to(root).as_posix() or "/com/applovin/" in "/" + p.relative_to(root).as_posix():
+                      continue
+                  lines.append("## {} — {}".format(class_desc, p.relative_to(root)))
+                  lines.append(method)
+                  if len(block) <= 260:
+                      for n, line in block:
+                          lines.append("{:5d}: {}".format(n, line.rstrip()[:300]))
+                  else:
+                      selected_lines = set()
+                      for n, _ in selected:
+                          for k in range(max(1,n-8), min(len(text),n+9)+1):
+                              selected_lines.add(k)
+                      for n,line in block:
+                          if n in selected_lines or n == block[0][0] or line.strip()==".end method":
+                              lines.append("{:5d}: {}".format(n,line.rstrip()[:300]))
+                      lines.append("(method body truncated to match context)")
+                  lines.append("")
+              if class_match:
+                  class_hits += 1
+          lines += ["", "## Resource layouts mentioning native ads", ""]
+          resource_hits = 0
+          for p in sorted((root / "res" / "layout").glob("*.xml")):
+              text = p.read_text(errors="ignore")
+              if re.search(r'NativeAd|native.?ad|AdLoader|admob', text, re.I):
+                  lines.append("- {}: {}".format(p.relative_to(root), " ".join(line.strip()[:240] for line in text.splitlines() if re.search(r'NativeAd|native.?ad|AdLoader|admob', line, re.I))[:700]))
+                  resource_hits += 1
+          if resource_hits == 0:
+              lines.append("No matching native-ad layout resources.")
+          lines += ["", "## Aggregate", "", "Matching smali instructions: {}".format(hits), "Classes with matching methods: {}".format(class_hits)]
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text("\n".join(lines) + "\n")
+          print("Wrote {} ({} bytes)".format(output, output.stat().st_size))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add analysis/hyperlock-native-ad-analysis.md
+          git commit -m "chore: inspect HyperLock native ad hooks [skip ci]"
+          git push origin "HEAD:work/hyperlock-analysis"
