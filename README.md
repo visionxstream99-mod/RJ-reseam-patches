@@ -24,10 +24,11 @@ A focused collection of patches for Android apps. Each patch has a specific targ
 |---|---|---|---|
 | **Advanced Download Manager** | Remove ads | `com.dv.adm` · 7.6 (70620) | Built successfully; APK and runtime testing still needed |
 | **Anixart** | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Includes separate options for banner ads, interstitial ads, and Kodik prompts; APK and runtime testing still needed |
+| **Pinterest** | First-pass privacy controls (4 patches) | `com.pinterest` · 14.42.0 (14428010) | Added for review; build, exact-APK application, and runtime tests pending |
 
-Anixart Lite is **not** included in the target listed above. Don't assume other app versions are compatible.
+Anixart Lite is **not** included in the Anixart target. Pinterest patches are pinned to 14.42.0; don't assume other versions are compatible.
 
-Patch IDs, implementation notes, and current verification details are documented in [PATCHES.md](PATCHES.md).
+Patch IDs, implementation notes, and current verification details are documented in [PATCHES.md](PATCHES.md). Pinterest's manifest findings and deferred work are recorded in [docs/PINTEREST-14.42.0.md](docs/PINTEREST-14.42.0.md).
 
 ## Install
 
@@ -37,13 +38,13 @@ Patch IDs, implementation notes, and current verification details are documented
 3. Choose a patch that matches your app version, review its options, then apply it.
 4. If Reseam shows a compatibility warning, stop and check the patch notes rather than forcing it.
 
-You can also get the signed bundle and catalogue from the [latest release](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest).
+You can also get the signed bundle and catalogue from the [latest release](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest). The Pinterest candidates are not included in a release until exact-target validation passes.
 
 ## Compatibility & testing
 
 A successful build means the patch bundle compiles. It does **not** prove that a patch works with a particular APK or behaves correctly at runtime.
 
-The current release has passed bundle build and patch-ID validation. The listed patches still need dry-run checks against their exact target APKs and hands-on testing before their compatibility can be called verified. Treat them as **experimental** until those checks are complete.
+The released bundle's existing patches still need dry-run checks against their exact target APKs and hands-on testing before their compatibility can be called verified. Pinterest's new sources are under review and are not yet published in a release. Treat untested patches as **experimental** until those checks are complete.
 
 If something fails, open an [issue](https://github.com/visionxstream99-mod/RJ-reseam-patches/issues) and include:
 
@@ -82,17 +83,19 @@ The release workflow uses the repository secret `BUNDLE_SIGNING_KEY_B64`. Keep t
 ## Repository map
 
 ```text
-manifest.toml                           Bundle metadata
-apps/adm/patch/                         ADM patch source
-apps/anixart/patch/                     Anixart patch source
-apps/anixart/extensions/anixart/         Anixart helper hooks
-apps/anixart/LICENSE                    Anixart patch license
-apps/anixart/README.md                  Anixart notes and attribution
-docs/RELEASE_CHECKLIST.md               Release and APK test checklist
-.github/workflows/validate.yml          Build validation
-.github/workflows/release.yml           Release publishing
-PATCHES.md                              Patch catalogue and implementation notes
-NOTICE                                  Third-party notices and terms
+manifest.toml                             Bundle metadata
+apps/adm/patch/                           ADM patch source
+apps/anixart/patch/                       Anixart patch source
+apps/anixart/extensions/anixart/          Anixart helper hooks
+apps/pinterest/patch/                     Pinterest manifest patches
+apps/pinterest/README.md                  Pinterest target and verification notes
+apps/anixart/LICENSE                      Third-party license and attribution
+docs/PINTEREST-14.42.0.md                 Pinterest APK analysis and release gate
+docs/RELEASE_CHECKLIST.md                 Release and APK test checklist
+.github/workflows/validate.yml            Build validation
+.github/workflows/release.yml             Release publishing
+PATCHES.md                                Patch catalogue and verification notes
+NOTICE                                    Third-party notices and terms
 ```
 
 For patch-author documentation, start with the [Reseam authoring guide](https://reseam.app/docs/authoring/start/) and [first patch guide](https://reseam.app/docs/authoring/first_patch/).
