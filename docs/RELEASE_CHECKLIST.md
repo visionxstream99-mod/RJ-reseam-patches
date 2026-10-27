@@ -1,13 +1,13 @@
 # Release checklist
 
-Keep ADM and Anixart source in `main`; do not publish a release until both build and target validation are complete.
+Keep patch source in `main`; do not publish a release until both build and target validation are complete.
 
 ## 1. Toolchain
 
 - [ ] Use JDK 17 and an installed Android SDK.
 - [ ] Use the exact Reseam CLI version configured in `settings.gradle.kts` (currently the workspace plugin is 0.32.0).
 - [ ] Run `./gradlew bundle --no-daemon` and resolve all compilation or bundle-load errors.
-- [ ] Inspect the signed output with `reseam bundle list` and confirm the patch IDs are exactly `app.rj.adm.patches.removeAds` and `app.rj.anixart.patches.removeAds`.
+- [ ] Inspect the signed output with `reseam bundle list` and confirm the patch IDs include `app.rj.adm.patches.removeAds`, `app.rj.anixart.patches.removeAds`, and `app.rj.hyperlock.patches.removeAds`.
 
 ## 2. ADM
 
@@ -25,7 +25,15 @@ Keep ADM and Anixart source in `main`; do not publish a release until both build
 - [ ] Verify playback and navigation still work after each option is enabled.
 - [ ] Do not claim support for Anixart Lite (`com.swiftsoft.anixartlt`) or other app versions without their own target analysis and tests.
 
-## 4. Signing and publishing
+## 4. HyperLock
+
+- [ ] Use an original HyperLock APK with package `com.appiolab.hyperlockscreenos` and version 0.1.2.
+- [ ] Run `reseam patch --dry-run` with `app.rj.hyperlock.patches.removeAds` explicitly enabled.
+- [ ] Confirm banner, native, and interstitial selectors each resolve uniquely.
+- [ ] Test intro, main screen, settings, gallery, and customization flows; confirm suppressed interstitials continue navigation.
+- [ ] Do not publish until the original APK dry-run and runtime checks pass.
+
+## 5. Signing and publishing
 
 - [ ] Sign with the intended release key stored in a private GitHub Actions secret. Never commit signing keys or reuse the temporary CI key.
 - [ ] Inspect the bundle manifest, IDs, versions, option names, and signer.
