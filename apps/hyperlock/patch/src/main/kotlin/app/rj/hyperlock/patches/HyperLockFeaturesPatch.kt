@@ -3,7 +3,6 @@ package app.rj.hyperlock.patches
 import app.reseam.patch.CompatiblePackage
 import app.reseam.patch.Type
 import app.reseam.patch.alwaysReturn
-import app.reseam.patch.boolOption
 import app.reseam.patch.klass
 import app.reseam.patch.method
 import app.reseam.patch.patch
