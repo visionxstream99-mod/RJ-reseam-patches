@@ -18,8 +18,8 @@ A community patch bundle maintained by **RJ** — with version-aware patches, cl
 
 | App | Patch | Target | Current status |
 |---|---|---|---|
-| Advanced Download Manager (ADM) | Remove ads | `com.dv.adm` · 7.6 / 70620 | Reconstructed from the old RJ bundle; source build and dry-run validation pending |
-| Anixart | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Reseam-native source added; APK dry-run and runtime test pending |
+| Advanced Download Manager (ADM) | Remove ads | `com.dv.adm` · 7.6 / 70620 | Source compiles in CI and its patch ID is in the built bundle; APK dry-run and runtime checks pending |
+| Anixart | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Source compiles in CI and patch metadata passes; APK dry-run and runtime checks pending |
 
 The implementations are in [PATCHES.md](PATCHES.md). The Anixart patch has separate options for banner ads, interstitial ads, and Kodik pre-roll behavior. It targets the `com.swiftsoft.anixartd` package only; Anixart Lite and other versions are not claimed as compatible.
 

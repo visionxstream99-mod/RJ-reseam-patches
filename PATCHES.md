@@ -10,7 +10,7 @@ This catalogue separates recovered source from verified releases. A source entry
 - Behavior: disables known AdMob, Admax, and AppBrain banner/interstitial entry points and the editor ad cycle.
 - Source: `apps/adm/patch/src/main/kotlin/app/rj/adm/patches/RemoveAdsPatch.kt`
 - Recovery: reconstructed from the previously recovered RJ `.reseam` bundle's compiled patch class.
-- Verification: **not yet built with the current Reseam 0.32.0 workspace or dry-run against a clean ADM 7.6 APK**. The older signed bundle used engine 0.29.0 and should not be republished unchanged.
+- Verification: **the source builds with the current Reseam 0.32.0 workspace and the patch ID is present in the CI-built bundle**. It has not been dry-run against a clean ADM 7.6 APK or tested at runtime. The older signed bundle used engine 0.29.0 and should not be republished unchanged.
 
 ## Anixart — Remove ads
 
@@ -21,7 +21,7 @@ This catalogue separates recovered source from verified releases. A source entry
 - Source: `apps/anixart/patch/src/main/kotlin/app/rj/anixart/patches/AnixartAdsPatch.kt`
 - Recovery: reconstructed as a Reseam-native implementation using the published target and behavior notes from [Error404rt/Anixart-patches](https://github.com/Error404rt/Anixart-patches). That project's Anixart patch is identified as GPLv3; see the attribution and license note in `apps/anixart/README.md`.
 - Compatibility note: this targets `com.swiftsoft.anixartd` 10.5 only. It does not claim compatibility with Anixart Lite (`com.swiftsoft.anixartlt`) or other versions.
-- Verification: **not yet built, dry-run against an Anixart 10.5 APK, or runtime-tested**.
+- Verification: **CI compiled the patch and included its metadata in a built bundle**. It has not been dry-run against an original Anixart 10.5 APK or tested at runtime.
 
 ## Release gate
 

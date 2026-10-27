@@ -19,4 +19,4 @@ This Reseam-native implementation was reconstructed using public feature and tar
 
 ## Verification status
 
-Source has been added, but this patch is **not yet confirmed as a working release**. It must compile, dry-run against an original Anixart 10.5 APK with every target resolving uniquely, and pass runtime checks for playback and navigation before publication.
+The patch compiled and its metadata was included in a CI-built test bundle. That artifact used a temporary signing key and is not a public release. This patch is **not yet confirmed as working on the app**: dry-run it against an original Anixart 10.5 APK, confirm each target resolves uniquely, then test playback and navigation before publication.
