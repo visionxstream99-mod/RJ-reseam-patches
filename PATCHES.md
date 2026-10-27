@@ -23,9 +23,19 @@ This catalogue separates recovered source from verified releases. A source entry
 - Compatibility note: this targets `com.swiftsoft.anixartd` 10.5 only. It does not claim compatibility with Anixart Lite (`com.swiftsoft.anixartlt`) or other versions.
 - Verification: **not yet built, dry-run against an Anixart 10.5 APK, or runtime-tested**.
 
+## HyperLock — Remove ads
+
+- Patch ID: `app.rj.hyperlock.patches.removeAds`
+- Package: `com.appiolab.hyperlockscreenos`
+- Target version: HyperLock Screen & AOD 0.1.2
+- Behavior: blocks the embedded AppLovin banner widget's ad-load entry point and Google interstitial/reward-fallback load/show entry points. Suppressed show requests invoke the callback's unavailable continuation when present.
+- Source: `apps/hyperlock/patch/src/main/kotlin/app/rj/hyperlock/patches/RemoveAdsPatch.kt`
+- Research: based on the user-provided APKCube/apktool Smali archive; app-specific signatures were identified in the custom `BannerAdLayout` and `InterstitialAdManager` classes.
+- Verification: **source added; current-workspace build, exact-target dry-run, and runtime test still pending**. Do not treat this entry as a verified release.
+
 ## Release gate
 
-Before either patch is listed as downloadable:
+Before any patch is listed as downloadable:
 
 1. Build the source with the Reseam workspace plugin and CLI version configured for this repository.
 2. Obtain an original APK matching the exact package and version listed above.
