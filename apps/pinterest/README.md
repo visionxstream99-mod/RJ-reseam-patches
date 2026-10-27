@@ -17,6 +17,6 @@ These edits do not claim to disable every tracker or every advertisement. No aut
 
 ## Verification status
 
-The target manifest was inspected and the APKM passed ZIP integrity checking. The patch sources still require a successful Reseam build and an exact-version patch run. A successful patch run does not prove runtime behavior; install and navigation checks are still required before calling the patches verified.
+The target manifest was inspected and the APKM passed ZIP integrity checking. CI successfully compiled the patch sources and generated a signed `.reseam` validation bundle; all four Pinterest patch IDs were confirmed in that bundle's manifest. The bundle has not yet been dry-run against the exact APKM or tested at runtime. A successful source build is not proof of compatibility or crash-free behavior.
 
 Do not broaden compatibility beyond 14.42.0 until a separate build has been inspected and tested.
