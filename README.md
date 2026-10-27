@@ -24,7 +24,8 @@ A focused collection of patches for Android apps. Each patch has a specific targ
 |---|---|---|---|
 | **Advanced Download Manager** | Remove ads | `com.dv.adm` · 7.6 (70620) | Built successfully; APK and runtime testing still needed |
 | **Anixart** | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Includes separate options for banner ads, interstitial ads, and Kodik prompts; APK and runtime testing still needed |
-| **HyperLock Screen & AOD** | Remove ads | `com.appiolab.hyperlockscreenos` · 0.1.2 | Banner/native/interstitial paths identified; target dry-run and runtime test pending |
+| **HyperLock Screen & AOD** | Remove ads | `com.appiolab.hyperlockscreenos` · 0.1.2 | Banner/native/interstitial/app-open targets inspected; dry-run and runtime testing pending |
+| **HyperLock Screen & AOD** | Customize HyperLock | `com.appiolab.hyperlockscreenos` · 0.1.2 | Optional 12-hour clock, depth-effect, and parallax-animation controls; dry-run and runtime testing pending |
 
 Anixart Lite is **not** included in the target listed above. HyperLock is targeted at version 0.1.2 only. Don't assume other app versions are compatible.
 
