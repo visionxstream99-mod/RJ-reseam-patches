@@ -31,7 +31,7 @@ This catalogue separates recovered source from verified releases. A source entry
 - Behavior: hides banner/native ad views, blocks banner/native/interstitial loading, suppresses interstitial and reward-fallback showing through their no-ad callbacks, and blocks the app-open ad loader. It does not change purchase logic or Play Store validation.
 - Source: `apps/hyperlock/patch/src/main/kotlin/app/rj/hyperlock/patches/RemoveAdsPatch.kt`
 - Research: the target classes and full method signatures were checked against the supplied original APKS `base.apk`.
-- Verification: the latest CI build succeeded and confirmed both HyperLock patch IDs. Static DEX checks of the supplied base.apk confirm the named targets and callback signatures. An exact-target Reseam dry-run and device runtime test are still required; no runtime success is claimed.
+- Verification: the latest CI build succeeded and confirmed both HyperLock patch IDs. Reseam CLI 0.32.0 dry-runs against the supplied 0.1.2 base APK passed for the ad patch alone (1 applied, 0 failed) and for both patches with all customization overrides enabled (2 applied, 0 failed). Actual patch application against the supplied base APK plus its 32 splits completed with 2 applied, 0 failed, and all 33 APK components written. Device launch and runtime behavior remain unverified; PairIP and Play Store ownership checks remain unchanged.
 
 ## HyperLock Screen & AOD — Customize HyperLock
 
@@ -41,7 +41,7 @@ This catalogue separates recovered source from verified releases. A source entry
 - Options: force 12-hour clock, force depth effects on, and force parallax animation on. All overrides default to off and leave HyperLock's saved settings untouched unless enabled.
 - Source: `apps/hyperlock/patch/src/main/kotlin/app/rj/hyperlock/patches/HyperLockFeaturesPatch.kt`
 - Research: the preference helper's methods `x24->m(I):Z`, `x24->n(I):Z`, and `x24->j(I):Z` were found in the supplied base DEX. They read the app's clock-format, depth-effect, and parallax-animation preferences respectively.
-- Verification: source selectors were matched to the supplied APK's DEX method table, and the current CI bundle build and patch-ID assertion passed. The Reseam dry-run and runtime behavior remain unverified. These options do not modify Play Store checks, purchases, or premium entitlement.
+- Verification: source selectors were matched to the supplied APK's DEX method table. The latest CI bundle build passed, and a Reseam CLI 0.32.0 dry-run with all three overrides enabled passed together with the ad patch (2 applied, 0 failed). Runtime behavior of the clock, depth, and parallax overrides remains unverified. These options do not modify Play Store checks, purchases, or premium entitlement.
 
 ## Release gate
 
