@@ -31,7 +31,7 @@ This catalogue separates recovered source from verified releases. A source entry
 - Behavior: blocks banner/native ad loading, interstitial/reward-fallback load/show entry points, and the app-open resume entry point. It does not change purchase logic or Play Store validation.
 - Source: `apps/hyperlock/patch/src/main/kotlin/app/rj/hyperlock/patches/RemoveAdsPatch.kt`
 - Research: the target classes and full method signatures were checked against the supplied original APKS `base.apk`.
-- Verification: CI has already built the earlier ad patch and confirmed its patch ID. A dry-run against the supplied APK and an in-app runtime test are still required; no runtime success is claimed.
+- Verification: the current CI run successfully built the bundle and confirmed both HyperLock patch IDs. Static DEX signature checks passed against the supplied base.apk. A true Reseam dry-run and an in-app runtime test are still required; no runtime success is claimed.
 
 ## HyperLock Screen & AOD — Customize HyperLock
 
@@ -41,7 +41,7 @@ This catalogue separates recovered source from verified releases. A source entry
 - Options: use a 12-hour clock; enable depth effects; enable parallax animations.
 - Source: `apps/hyperlock/patch/src/main/kotlin/app/rj/hyperlock/patches/HyperLockFeaturesPatch.kt`
 - Research: the preference helper's methods `x24->m(I):Z`, `x24->n(I):Z`, and `x24->j(I):Z` were found in the supplied base DEX. They read the app's clock-format, depth-effect, and parallax-animation preferences respectively.
-- Verification: source selectors were matched to the supplied APK's DEX method table. The Reseam dry-run and runtime behavior remain unverified. These options do not modify Play Store checks, purchases, or premium entitlement.
+- Verification: source selectors were matched to the supplied APK's DEX method table, and the current CI bundle build and patch-ID assertion passed. The Reseam dry-run and runtime behavior remain unverified. These options do not modify Play Store checks, purchases, or premium entitlement.
 
 ## Release gate
 
