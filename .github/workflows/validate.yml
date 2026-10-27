@@ -50,6 +50,7 @@ jobs:
           grep -Fq 'app.rj.adm.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
           grep -Fq 'app.rj.anixart.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
           grep -Fq 'app.rj.hyperlock.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
+          grep -Fq 'app.rj.hyperlock.patches.customizeHyperLock' "$RUNNER_TEMP/patch-list.txt"
 
       - name: Preserve build output when validation fails
         if: always()
