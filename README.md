@@ -24,11 +24,13 @@ A focused collection of patches for Android apps. Each patch has a specific targ
 |---|---|---|---|
 | **Advanced Download Manager** | Remove ads | `com.dv.adm` · 7.6 (70620) | Built successfully; APK and runtime testing still needed |
 | **Anixart** | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Includes separate options for banner ads, interstitial ads, and Kodik prompts; APK and runtime testing still needed |
-| **Pinterest** | First-pass privacy controls (4 patches) | `com.pinterest` · 14.42.0 (14428010) | Added for review; build, exact-APK application, and runtime tests pending |
+| **Pinterest** | First-pass privacy controls (4 patches) | `com.pinterest` · 14.42.0 (14428010) | Build passes; exact-target application and runtime tests pending |
+| **HyperLock Screen & AOD** | Remove ads | `com.appiolab.hyperlockscreenos` · 0.1.2 | Exact-target patch application previously passed; device runtime testing pending |
+| **HyperLock Screen & AOD** | Customize HyperLock (3 options) | `com.appiolab.hyperlockscreenos` · 0.1.2 | Optional clock/depth/parallax overrides; runtime testing pending |
 
-Anixart Lite is **not** included in the Anixart target. Pinterest patches are pinned to 14.42.0; don't assume other versions are compatible.
+Anixart Lite is **not** included in the Anixart target. Pinterest is pinned to 14.42.0 and HyperLock to 0.1.2; don't assume other versions are compatible.
 
-Patch IDs, implementation notes, and current verification details are documented in [PATCHES.md](PATCHES.md). Pinterest's manifest findings and deferred work are recorded in [docs/PINTEREST-14.42.0.md](docs/PINTEREST-14.42.0.md).
+Patch IDs, implementation notes, and current verification details are documented in [PATCHES.md](PATCHES.md). Pinterest's manifest findings and deferred work are recorded in [docs/PINTEREST-14.42.0.md](docs/PINTEREST-14.42.0.md); HyperLock target notes are in [apps/hyperlock/README.md](apps/hyperlock/README.md).
 
 ## Install
 
@@ -38,13 +40,13 @@ Patch IDs, implementation notes, and current verification details are documented
 3. Choose a patch that matches your app version, review its options, then apply it.
 4. If Reseam shows a compatibility warning, stop and check the patch notes rather than forcing it.
 
-You can also get the signed bundle and catalogue from the [latest release](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest). The Pinterest candidates are not included in a release until exact-target validation passes.
+You can also get the signed bundle and catalogue from the [latest release](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest). Pinterest and HyperLock remain experimental until the exact-target and runtime checks listed in their notes are complete.
 
 ## Compatibility & testing
 
 A successful build means the patch bundle compiles. It does **not** prove that a patch works with a particular APK or behaves correctly at runtime.
 
-The released bundle's existing patches still need dry-run checks against their exact target APKs and hands-on testing before their compatibility can be called verified. Pinterest's new sources are under review and are not yet published in a release. Treat untested patches as **experimental** until those checks are complete.
+A successful compile does not prove runtime behavior. Pinterest has not yet passed exact-target patch application or runtime tests. HyperLock passed exact-target dry-run/application checks against version 0.1.2, but has not had a device runtime test. Treat untested patches as **experimental**.
 
 If something fails, open an [issue](https://github.com/visionxstream99-mod/RJ-reseam-patches/issues) and include:
 
@@ -89,6 +91,8 @@ apps/anixart/patch/                       Anixart patch source
 apps/anixart/extensions/anixart/          Anixart helper hooks
 apps/pinterest/patch/                     Pinterest manifest patches
 apps/pinterest/README.md                  Pinterest target and verification notes
+apps/hyperlock/patch/                     HyperLock ad-removal and customization patches
+apps/hyperlock/README.md                  HyperLock target and verification notes
 apps/anixart/LICENSE                      Third-party license and attribution
 docs/PINTEREST-14.42.0.md                 Pinterest APK analysis and release gate
 docs/RELEASE_CHECKLIST.md                 Release and APK test checklist

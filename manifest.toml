@@ -1,6 +1,6 @@
 [bundle]
 name = "rj-reseam-patches"
 author = "RJ"
-description = "RJ community patches for ADM, Anixart, and Pinterest"
+description = "RJ community patches for ADM, Anixart, Pinterest, and HyperLock"
 license = "AGPL-3.0-or-later"
 format_version = 1

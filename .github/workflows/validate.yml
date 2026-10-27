@@ -58,6 +58,8 @@ jobs:
               "app.rj.pinterest.patches.optOutGoogleAnalytics",
               "app.rj.pinterest.patches.disablePrivacySandboxAdServices",
               "app.rj.pinterest.patches.disableGoogleEngageReceiver",
+              "app.rj.hyperlock.patches.removeAds",
+              "app.rj.hyperlock.patches.customizeHyperLock",
           }
           actual = {patch["id"] for patch in manifest.get("patches", [])}
           missing = expected - actual
@@ -74,7 +76,7 @@ jobs:
         shell: bash
         run: |
           echo 'Source compilation and bundle manifest checks passed.'
-          echo 'Exact-target application is not run in this workflow: the existing GitHub release ZIP is an apktool-decoded project directory, not the uploaded APKM or a raw base.apk.'
+          echo 'Pinterest exact-target application is not run in this workflow because the supplied APKM is not wired as a raw base.apk CI fixture.'
           echo 'See docs/PINTEREST-14.42.0.md for the verified target APKM checksum and the remaining apply/runtime test gate.'
       - name: Preserve diagnostics when validation fails
         if: always()
