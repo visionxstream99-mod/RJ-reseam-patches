@@ -14,7 +14,7 @@ private val HYPERLOCK = CompatiblePackage(
 
 private val bannerAdLayout = klass("com.applovin.mediation.BannerAdLayout")
 private val interstitialAdManager = klass("com.applovin.mediation.InterstitialAdManager")
-private val adCallback = klass("com.applovin.mediation.InterstitialAdManager$AdCallback")
+private val adCallback = klass("com.applovin.mediation.InterstitialAdManager\$AdCallback")
 
 private val continueWithoutAd = method("HyperLock ad-unavailable callback") {
     inClass(adCallback)
