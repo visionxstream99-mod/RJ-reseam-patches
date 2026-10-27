@@ -27,130 +27,81 @@ jobs:
           echo "63aec7722410be0f3eb00fbdc54f54df2b986777de2cdd1d482c759ade02876b  $RUNNER_TEMP/hyperlock.zip" | sha256sum -c -
           mkdir -p "$RUNNER_TEMP/hyperlock-input"
           unzip -q "$RUNNER_TEMP/hyperlock.zip" -d "$RUNNER_TEMP/hyperlock-input"
-      - name: Inspect app activities and banner widget methods
+      - name: Inspect interstitial manager and caller methods
         shell: bash
         run: |
           set -euo pipefail
-          python3 - "$RUNNER_TEMP/hyperlock-input/HyperLock-Screen-AOD_0.1.2_apkcube" analysis/hyperlock-ad-focused.md <<'PY'
+          python3 - "$RUNNER_TEMP/hyperlock-input/HyperLock-Screen-AOD_0.1.2_apkcube" analysis/hyperlock-interstitial-inspection.md <<'PY'
           import re, sys
           from pathlib import Path
           root = Path(sys.argv[1])
           output = Path(sys.argv[2])
-          app = root / "smali/com/appiolab/hyperlock_screen_and_aod"
-          files = sorted(app.rglob("*.smali")) if app.exists() else []
-          paths = [
-              "Activitys/MainActivity.smali",
-              "Activitys/SplashActivity.smali",
-              "Activitys/SettingActivity.smali",
-              "Activitys/AllImagesSeeActivity.smali",
-              "Activitys/BuyPremiumActivity.smali",
-              "Activitys/ThankYouActivity.smali",
-          ]
-          wanted = [
-              root / "smali/com/applovin/mediation/BannerAdLayout.smali",
-              root / "smali_classes2/com/applovin/mediation/BannerAdLayout.smali",
-              root / "smali/com/applovin/mediation/MaxAdView.smali",
-              root / "smali_classes2/com/applovin/mediation/MaxAdView.smali",
-          ]
-          wanted += [app / p for p in paths]
-          wanted = [p for p in wanted if p.exists()]
-          all_smali = sorted(p for p in root.glob("smali*/**/*.smali") if p.is_file())
-          lines = [
-              "HyperLock 0.1.2 — focused ad-path inspection", "",
-              "Package: com.appiolab.hyperlockscreenos",
-              "App code namespace: com.appiolab.hyperlock_screen_and_aod",
-              "App namespace Smali files: {}".format(len(files)),
-              "All Smali files: {}".format(len(all_smali)),
-              "",
-              "## Focused classes and methods",
-              ""
-          ]
-          term = re.compile(
-              r'BannerAdLayout|MaxAdView|Lcom/google/android/gms/ads/AdView;|'
-              r'Lcom/google/android/gms/ads/interstitial/InterstitialAd;|'
-              r'Lcom/google/android/gms/ads/rewarded/RewardedAd;|'
-              r'AdRequest;|MobileAds;|loadAd\(|show\(|bannerAd|setContentView|'
-              r'R\$layout;|La5;->bind|La\\w+;->bind|premium|admob|interstitial|ads',
-              re.I)
-          for p in wanted:
+          smali_files = sorted(p for p in root.glob("smali*/**/*.smali") if p.is_file())
+          wanted = [p for p in smali_files if p.name.startswith("InterstitialAdManager") and "/com/applovin/mediation/" in p.as_posix()]
+          lines = ["HyperLock 0.1.2 — interstitial ad path", ""]
+          def dump_class(p):
               txt = p.read_text(errors="ignore").splitlines()
               cls = next((x.strip() for x in txt if x.strip().startswith(".class ")), "")
-              lines.append("### {}".format(p.relative_to(root)))
-              lines.append("Class: {}".format(cls))
+              lines.append("## {} ({})".format(cls, p.relative_to(root)))
               current = "(outside method)"
-              selected = []
+              capture = False
+              body = []
+              blocks = []
               for n, line in enumerate(txt, 1):
                   if line.strip().startswith(".method "):
+                      if capture and body:
+                          blocks.append(body)
                       current = line.strip()
-                  if term.search(line):
-                      lo, hi = max(0, n-3), min(len(txt), n+2)
-                      selected.append((n, current, " | ".join(x.strip() for x in txt[lo:hi])))
-              if not selected:
-                  lines.append("No focused ad/layout method matches.")
-              for n, method, snippet in selected[:100]:
-                  lines.append("Line {} | {}".format(n, method))
-                  lines.append("  {}".format(snippet[:420]))
-              lines.append("")
-          lines += ["## All non-SDK classes referring to the AppLovin banner widget", ""]
-          count = 0
-          for p in all_smali:
-              rel = p.relative_to(root).as_posix()
-              if "/com/applovin/" in "/" + rel or "/com/google/android/gms/ads/" in "/" + rel:
+                      body = [(n, line)]
+                      capture = bool(re.search(r'load|show|ready|display|interstitial|present|ad\b', current, re.I))
+                  elif body:
+                      body.append((n, line))
+                  if line.strip() == ".end method":
+                      if capture and body:
+                          blocks.append(body)
+                      body = []
+                      capture = False
+                      current = "(outside method)"
+              for block in blocks:
+                  for n, line in block:
+                      if any(k in line.lower() for k in ["invoke-", "method ", "return", "const-string", "iget", "iput", "if-"]):
+                          lines.append("{}: {}".format(n, line.strip()[:260]))
+                  lines.append("")
+          if wanted:
+              for p in wanted:
+                  dump_class(p)
+          else:
+              lines.append("No InterstitialAdManager class with that exact name found.")
+          lines += ["", "## HyperLock caller methods referencing the interstitial manager or ad unit keys", ""]
+          hits = 0
+          for p in smali_files:
+              if "/com/appiolab/hyperlock_screen_and_aod/" not in p.as_posix():
                   continue
               txt = p.read_text(errors="ignore").splitlines()
-              refs = []
+              cls = next((x.strip() for x in txt if x.strip().startswith(".class ")), "")
               current = "(outside method)"
-              for n, line in enumerate(txt, 1):
+              for i, line in enumerate(txt):
                   if line.strip().startswith(".method "):
                       current = line.strip()
-                  if "Lcom/applovin/mediation/BannerAdLayout;" in line or "BannerAdLayout;->" in line:
-                      refs.append((n, current, line.strip()))
-              if refs:
-                  cls = next((x.strip() for x in txt if x.strip().startswith(".class ")), "")
-                  lines.append("{} ({})".format(cls, rel))
-                  for n, method, snippet in refs[:25]:
-                      lines.append("  Line {} | {}".format(n, method))
-                      lines.append("    {}".format(snippet[:300]))
-                      count += 1
-                  lines.append("")
-          if count == 0:
-              lines.append("No direct banner-widget field/invoke references found outside SDK files.")
-          lines += ["", "## Exact ad SDK calls from non-SDK classes", ""]
-          callpat = re.compile(
-              r'invoke-\\S+.*Lcom/google/android/gms/ads/(?:AdView;->|interstitial/InterstitialAd;->|rewarded/RewardedAd;->|AdLoader;->|MobileAds;->)|'
-              r'invoke-\\S+.*Lcom/applovin/mediation/BannerAdLayout;->|'
-              r'invoke-\\S+.*Lcom/applovin/mediation/MaxAdView;->|'
-              r'invoke-\\S+.*Lcom/applovin/mediation/MaxInterstitialAd;->',
-              re.I)
-          direct = 0
-          for p in all_smali:
-              rel = p.relative_to(root).as_posix()
-              if "/com/applovin/" in "/" + rel or "/com/google/android/gms/ads/" in "/" + rel:
-                  continue
-              txt = p.read_text(errors="ignore").splitlines()
-              current = "(outside method)"
-              selected = []
-              for n, line in enumerate(txt, 1):
-                  if line.strip().startswith(".method "):
-                      current = line.strip()
-                  if callpat.search(line):
-                      selected.append((n, current, line.strip()))
-              if selected:
-                  cls = next((x.strip() for x in txt if x.strip().startswith(".class ")), "")
-                  lines.append("{} ({})".format(cls, rel))
-                  for n, method, snippet in selected[:20]:
-                      lines.append("  Line {} | {}".format(n, method))
-                      lines.append("    {}".format(snippet[:300]))
-                      direct += 1
-                  lines.append("")
-          if direct == 0:
-              lines.append("No literal public API ad-load/show calls matched; see focused class output for bindings and widget setup.")
+                  if re.search(r'InterstitialAdManager|getAdmobInterstitialCommonAdUnit|showAd|loadAd', line, re.I):
+                      lines.append("{} | {} | line {}: {}".format(cls, current, i+1, line.strip()[:280]))
+                      for j in range(max(0, i-2), min(len(txt), i+3)):
+                          if j != i:
+                              lines.append("  {}".format(txt[j].strip()[:240]))
+                      lines.append("")
+                      hits += 1
+                      if hits >= 120:
+                          break
+              if hits >= 120:
+                  break
+          if hits == 0:
+              lines.append("No app-owned interstitial manager references found.")
           output.parent.mkdir(parents=True, exist_ok=True)
           output.write_text("\n".join(lines) + "\n")
-          print("Wrote focused report: {} bytes".format(output.stat().st_size))
+          print("Wrote {} ({} bytes)".format(output, output.stat().st_size))
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add analysis/hyperlock-ad-focused.md
-          git commit -m "chore: inspect HyperLock banner and interstitial hooks [skip ci]"
+          git add analysis/hyperlock-interstitial-inspection.md
+          git commit -m "chore: inspect HyperLock interstitial methods [skip ci]"
           git push origin "HEAD:work/hyperlock-analysis"
