@@ -45,7 +45,7 @@ private val showInterstitialWithCount = method("HyperLock counted interstitial s
     params(
         "android.app.Activity",
         Type.String,
-        "com.applovin.mediation.InterstitialAdManager$AdCallback"
+        "com.applovin.mediation.InterstitialAdManager\$AdCallback"
     )
     returns(Type.Void)
 }
@@ -56,7 +56,7 @@ private val showInterstitialWithRewardFallback = method("HyperLock interstitial/
     params(
         "android.app.Activity",
         Type.String,
-        "com.applovin.mediation.InterstitialAdManager$AdCallback"
+        "com.applovin.mediation.InterstitialAdManager\$AdCallback"
     )
     returns(Type.Void)
 }
@@ -67,7 +67,7 @@ private val showInterstitialWithoutCount = method("HyperLock uncounted interstit
     params(
         "android.app.Activity",
         Type.String,
-        "com.applovin.mediation.InterstitialAdManager$AdCallback"
+        "com.applovin.mediation.InterstitialAdManager\$AdCallback"
     )
     returns(Type.Void)
 }
