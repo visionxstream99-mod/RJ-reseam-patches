@@ -27,157 +27,155 @@ jobs:
           echo "63aec7722410be0f3eb00fbdc54f54df2b986777de2cdd1d482c759ade02876b  $RUNNER_TEMP/hyperlock.zip" | sha256sum -c -
           mkdir -p "$RUNNER_TEMP/hyperlock-input"
           unzip -q "$RUNNER_TEMP/hyperlock.zip" -d "$RUNNER_TEMP/hyperlock-input"
-      - name: Analyze app-owned Smali and ad SDK call sites
+      - name: Map manifest components and find ad call sites
         shell: bash
         run: |
           set -euo pipefail
           python3 - "$RUNNER_TEMP/hyperlock-input/HyperLock-Screen-AOD_0.1.2_apkcube" analysis/hyperlock-smali-findings.md <<'PY'
-          import re, sys
+          import collections, re, sys
           from pathlib import Path
-
           root = Path(sys.argv[1])
           output = Path(sys.argv[2])
-          manifest = root / "AndroidManifest.xml"
-          manifest_text = manifest.read_text(errors="ignore") if manifest.exists() else ""
-          pkg_match = re.search(r'<manifest[^>]*\bpackage="([^"]+)"', manifest_text)
-          pkg = pkg_match.group(1) if pkg_match else "com.appiolab.hyperlockscreenos"
-          prefix = pkg.replace(".", "/")
-          smali_files = sorted(p for p in root.glob("smali*/**/*.smali") if p.is_file())
-          app_files = [p for p in smali_files if prefix in p.as_posix()]
-          sdk_pattern = re.compile(
+          manifest_path = root / "AndroidManifest.xml"
+          manifest = manifest_path.read_text(errors="ignore") if manifest_path.exists() else ""
+          m = re.search(r'<manifest[^>]*\bpackage="([^"]+)"', manifest)
+          pkg = m.group(1) if m else "unknown"
+          smali = sorted(p for p in root.glob("smali*/**/*.smali") if p.is_file())
+          def desc(p):
+              try:
+                  t = p.read_text(errors="ignore")
+                  m = re.search(r'^\s*\.class\s+.*?\s(L[^;]+;)', t, re.M)
+                  return m.group(1) if m else ""
+              except Exception:
+                  return ""
+          class_paths = {desc(p): p for p in smali if desc(p)}
+          package_counts = collections.Counter()
+          for c in class_paths:
+              body = c[1:-1].split("/")
+              if body:
+                  package_counts["/".join(body[:min(3, len(body)-1)]) if len(body)>1 else body[0]] += 1
+          component_names = []
+          for line in manifest.splitlines():
+              if re.search(r'<(?:activity|activity-alias|service|receiver|provider)\b', line):
+                  nam = re.search(r'android:name="([^"]+)"', line)
+                  if nam:
+                      name = nam.group(1)
+                      if name.startswith("."):
+                          name = pkg + name
+                      elif "." not in name:
+                          name = pkg + "." + name
+                      component_names.append(name)
+          ad_pat = re.compile(
               r'Lcom/google/android/gms/ads/|Lcom/google/ads/|Lcom/applovin/|'
               r'Lcom/facebook/ads/|Lcom/unity3d/ads/|Lcom/ironsource/|'
               r'Lcom/startapp/|Lcom/inmobi/|Lcom/appodeal/|Lcom/chartboost/|'
-              r'Lcom/vungle/|MobileAds;|AdView;->|InterstitialAd;->|RewardedAd;->|'
+              r'Lcom/vungle/|BannerAdLayout|MaxAdView|MaxInterstitialAd|'
+              r'AppLovinSdk|MobileAds;|AdView;->|InterstitialAd;->|RewardedAd;->|'
               r'NativeAd;->|AdLoader;->|AdRequest;|loadAd\(|show\(',
-              re.I
-          )
-          string_pattern = re.compile(
-              r'const-string.*"(?:[^"]*ad[^"]*|[^"]*premium[^"]*|[^"]*sponsor[^"]*)"|'
-              r'ads_enabled|remove_ads|no_ads|ad_unit|admob|interstitial|banner_ad|'
-              r'rewarded_ad|native_ad|premium',
-              re.I
+              re.I)
+          str_pat = re.compile(r'const-string.*"(?:[^"]*(?:admob|ads|banner|interstitial|rewarded|premium|sponsor|advert)[^"]*)"', re.I)
+          external = (
+              "/com/google/android/gms/ads/", "/com/google/ads/", "/com/applovin/",
+              "/com/facebook/ads/", "/com/unity3d/ads/", "/com/ironsource/",
+              "/com/startapp/", "/com/inmobi/", "/com/appodeal/", "/com/chartboost/", "/com/vungle/"
           )
           lines = [
-              "HyperLock 0.1.2 — Smali selector research",
-              "",
-              "This report is generated from the supplied APKCube/decompiled archive. It is not an installable patch.",
-              "",
+              "HyperLock 0.1.2 — Smali selector research", "",
+              "This report is static selector research, not a patch artifact.",
               "Package: {}".format(pkg),
-              "Manifest: {}".format(manifest.relative_to(root) if manifest.exists() else "not found"),
-              "Smali files: {}".format(len(smali_files)),
-              "App-owned Smali files under package prefix {}: {}".format(prefix, len(app_files)),
+              "Smali files: {}".format(len(smali)),
+              "Class descriptors: {}".format(len(class_paths)),
               "",
-              "Manifest ad-related declarations:",
+              "## Manifest components",
+              ""
           ]
-          for i, line in enumerate(manifest_text.splitlines(), 1):
-              if re.search(r'ads|admob|applovin|facebook|unity|ironsource|meta-data|INTERNET', line, re.I):
-                  lines.append("  AndroidManifest.xml:{}: {}".format(i, line.strip()[:240]))
-                  if len(lines) > 100:
-                      break
-          lines += ["", "Ad SDK class inventory:", ""]
-          sdk_counts = {}
-          for p in smali_files:
-              s = p.as_posix()
-              for name, pat in [
-                  ("Google Mobile Ads", "/com/google/android/gms/ads/"),
-                  ("Google Ads legacy", "/com/google/ads/"),
-                  ("AppLovin", "/com/applovin/"),
-                  ("Meta/Facebook Ads", "/com/facebook/ads/"),
-                  ("Unity Ads", "/com/unity3d/ads/"),
-                  ("IronSource", "/com/ironsource/"),
-                  ("Start.io", "/com/startapp/"),
-                  ("InMobi", "/com/inmobi/"),
-                  ("Appodeal", "/com/appodeal/"),
-                  ("Chartboost", "/com/chartboost/"),
-                  ("Vungle", "/com/vungle/"),
-              ]:
-                  if pat in s:
-                      sdk_counts[name] = sdk_counts.get(name, 0) + 1
-          for name, count in sorted(sdk_counts.items()):
-              lines.append("- {}: {} Smali files".format(name, count))
-          if not sdk_counts:
-              lines.append("No common ad SDK package names found in archive paths.")
-          lines += ["", "App-owned methods containing ad SDK call references:", ""]
+          for name in component_names:
+              p = class_paths.get("L" + name.replace(".", "/") + ";")
+              lines.append("- {}{}".format(name, " — Smali found: {}".format(p.relative_to(root)) if p else " — no exact class file found"))
+          lines += ["", "## Most common class package prefixes", ""]
+          for name, count in package_counts.most_common(80):
+              lines.append("- {}: {}".format(name, count))
+          lines += ["", "## Ad-related call sites outside ad SDK implementation packages", ""]
           hits = 0
-          for p in app_files:
+          class_hits = 0
+          for p in smali:
+              ps = p.as_posix()
+              if any(ext in ps for ext in external):
+                  continue
               try:
                   content = p.read_text(errors="ignore").splitlines()
               except Exception:
                   continue
-              class_line = next((x.strip() for x in content if x.strip().startswith(".class ")), "")
-              relevant = []
-              current_method = "(outside method)"
-              for idx, line in enumerate(content):
+              cls = next((x.strip() for x in content if x.strip().startswith(".class ")), "")
+              selected = []
+              method = "(outside method)"
+              for n, line in enumerate(content, 1):
                   if line.strip().startswith(".method "):
-                      current_method = line.strip()
-                  if sdk_pattern.search(line):
-                      relevant.append((idx + 1, current_method, line.strip()))
-              if not relevant:
-                  continue
-              lines.append("Class {} ({})".format(class_line, p.relative_to(root)))
-              for n, method, snippet in relevant[:16]:
-                  lines.append("  line {} | {}".format(n, method))
-                  lines.append("    {}".format(snippet[:240]))
-                  hits += 1
-                  if hits >= 300:
-                      break
-              lines.append("")
-              if hits >= 300:
+                      method = line.strip()
+                  if ad_pat.search(line):
+                      selected.append((n, method, line.strip()))
+              if selected:
+                  class_hits += 1
+                  lines.append("Class descriptor: {}".format(cls))
+                  lines.append("File: {}".format(p.relative_to(root)))
+                  for n, method, snippet in selected[:12]:
+                      lines.append("  line {} | {}".format(n, method))
+                      lines.append("    {}".format(snippet[:240]))
+                      hits += 1
+                      if hits >= 350:
+                          break
+                  lines.append("")
+              if hits >= 350:
                   break
           if hits == 0:
-              lines.append("No direct ad SDK invocations found in app-owned files. The ad UI may be loaded indirectly or via WebView/native extension.")
-          lines += ["", "App-owned ad/premium-related string constants:", ""]
-          string_hits = 0
-          for p in app_files:
+              lines.append("No matching call-site references outside SDK packages were found.")
+          lines += ["", "## Ad/premium string constants outside SDK packages", ""]
+          shits = 0
+          for p in smali:
+              ps = p.as_posix()
+              if any(ext in ps for ext in external):
+                  continue
               try:
                   content = p.read_text(errors="ignore").splitlines()
               except Exception:
                   continue
-              current_method = "(outside method)"
+              cls = next((x.strip() for x in content if x.strip().startswith(".class ")), "")
+              method = "(outside method)"
               selected = []
-              for idx, line in enumerate(content):
+              for n, line in enumerate(content, 1):
                   if line.strip().startswith(".method "):
-                      current_method = line.strip()
-                  if string_pattern.search(line):
-                      selected.append((idx + 1, current_method, line.strip()))
-              if not selected:
-                  continue
-              lines.append("Class {}".format(p.relative_to(root)))
-              for n, method, snippet in selected[:10]:
-                  lines.append("  line {} | {}".format(n, method))
-                  lines.append("    {}".format(snippet[:220]))
-                  string_hits += 1
-                  if string_hits >= 160:
-                      break
-              lines.append("")
-              if string_hits >= 160:
+                      method = line.strip()
+                  if str_pat.search(line):
+                      selected.append((n, method, line.strip()))
+              if selected:
+                  lines.append("Class descriptor: {}".format(cls))
+                  lines.append("File: {}".format(p.relative_to(root)))
+                  for n, method, snippet in selected[:8]:
+                      lines.append("  line {} | {}".format(n, method))
+                      lines.append("    {}".format(snippet[:220]))
+                      shits += 1
+                      if shits >= 180:
+                          break
+                  lines.append("")
+              if shits >= 180:
                   break
-          if string_hits == 0:
-              lines.append("No ad/premium-related strings found under the app package prefix.")
-          lines += ["", "Resource strings:", ""]
-          resource_hits = 0
-          for p in sorted((root / "res").glob("**/*.xml")):
+          if shits == 0:
+              lines.append("No matching string constants outside SDK packages.")
+          lines += ["", "## App layout ids/components related to ads", ""]
+          res = root / "res"
+          for p in sorted(res.glob("layout/*.xml")):
               try:
-                  content = p.read_text(errors="ignore").splitlines()
+                  txt = p.read_text(errors="ignore")
               except Exception:
                   continue
-              for idx, line in enumerate(content, 1):
-                  if re.search(r'advert|admob|interstitial|banner|premium|remove.?ads|watch.?ad|sponsor', line, re.I):
-                      lines.append("{}:{}: {}".format(p.relative_to(root), idx, line.strip()[:220]))
-                      resource_hits += 1
-                      if resource_hits >= 120:
-                          break
-              if resource_hits >= 120:
-                  break
-          if resource_hits == 0:
-              lines.append("No matching resource strings.")
+              if re.search(r'bannerAd|BannerAdLayout|AdView|Premium|premium', txt, re.I):
+                  lines.append("- {}: {}".format(p.relative_to(root), "; ".join(x.strip()[:180] for x in txt.splitlines() if re.search(r'bannerAd|BannerAdLayout|AdView|Premium|premium', x, re.I))[:700]))
           output.parent.mkdir(parents=True, exist_ok=True)
           output.write_text("\n".join(lines) + "\n")
-          print("Wrote {} ({} bytes), {} app classes with {} direct SDK hits.".format(output, output.stat().st_size, len(app_files), hits))
+          print("Wrote {} ({} bytes); {} smali classes have ad references.".format(output, output.stat().st_size, class_hits))
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add analysis/hyperlock-smali-findings.md
-          git commit -m "chore: analyze HyperLock ad call sites [skip ci]"
+          git commit -m "chore: map HyperLock ad selectors [skip ci]"
           git push origin "HEAD:work/hyperlock-analysis"
