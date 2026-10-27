@@ -38,7 +38,7 @@ This catalogue separates recovered source from verified releases. A source entry
 - Patch ID: `app.rj.hyperlock.patches.customizeHyperLock`
 - Package: `com.appiolab.hyperlockscreenos`
 - Target version: HyperLock Screen & AOD 0.1.2
-- Options: use a 12-hour clock; enable depth effects; enable parallax animations.
+- Options: force 12-hour clock, force depth effects on, and force parallax animation on. All overrides default to off and leave HyperLock's saved settings untouched unless enabled.
 - Source: `apps/hyperlock/patch/src/main/kotlin/app/rj/hyperlock/patches/HyperLockFeaturesPatch.kt`
 - Research: the preference helper's methods `x24->m(I):Z`, `x24->n(I):Z`, and `x24->j(I):Z` were found in the supplied base DEX. They read the app's clock-format, depth-effect, and parallax-animation preferences respectively.
 - Verification: source selectors were matched to the supplied APK's DEX method table, and the current CI bundle build and patch-ID assertion passed. The Reseam dry-run and runtime behavior remain unverified. These options do not modify Play Store checks, purchases, or premium entitlement.
