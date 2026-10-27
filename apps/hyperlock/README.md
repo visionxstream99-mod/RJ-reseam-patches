@@ -14,10 +14,10 @@
 
 ## Behavior
 
-The patch blocks the embedded `BannerAdLayout.loadAd(String)` and `NativeAdLayout.loadAd(String)` entry points used for banner and native ad placements, and blocks the embedded interstitial manager's load/show entry points. When a show request is suppressed, it invokes the manager callback's `c()` unavailable/failure continuation when present, then returns without displaying an ad.
+The patch hides the custom banner and native-ad views while stopping their load entry points, blocks interstitial loading and showing, and prevents `AppOpenManager.b()` from requesting a Google app-open ad. For suppressed show calls, it invokes the matching no-ad continuation: `c()` for normal interstitial paths and `a()` for the reward-fallback path. PairIP and Play Store ownership checks are left unchanged.
 
 The ad target signatures were checked against the supplied HyperLock 0.1.2 APKS `base.apk`, including the custom banner widget, native ad widget, and interstitial manager. The separate feature patch uses exact `x24` preference-read signatures `m(I):Z` (12-hour clock), `n(I):Z` (depth effect), and `j(I):Z` (parallax animation). These are Reseam-native patches; they do not include or distribute HyperLock application code.
 
 ## Build and runtime verification status
 
-The supplied HyperLock 0.1.2 base APK was inspected. Static DEX signature checks passed and GitHub Actions successfully built the signed test bundle and verified both HyperLock patch IDs. The exact-target Reseam dry-run and an in-app runtime test remain pending; a successful compile alone does not prove ads are gone or settings behave correctly. Do not treat these source entries as a verified release.
+The supplied HyperLock 0.1.2 base APK was inspected, and the patch selectors correspond to methods present in its DEX. The latest GitHub Actions build succeeded and verified both HyperLock patch IDs. The exact-target Reseam dry-run and in-app runtime tests remain pending; compilation alone does not prove that every ad path is suppressed or the optional settings work correctly. Do not treat these source entries as a verified release.
