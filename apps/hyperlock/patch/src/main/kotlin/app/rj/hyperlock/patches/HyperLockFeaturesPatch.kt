@@ -51,21 +51,21 @@ val customizeHyperLock = patch("Customize HyperLock") {
 
     val use12HourClock = boolOption(
         key = "use12HourClock",
-        title = "12-hour clock",
-        description = "Use a 12-hour clock format across HyperLock clock styles.",
+        title = "Force 12-hour clock",
+        description = "Force 12-hour time across clock styles. Off leaves HyperLock's saved setting unchanged.",
         default = false
     )
     val enableDepthEffect = boolOption(
         key = "enableDepthEffect",
-        title = "Depth effects",
-        description = "Keep depth effects enabled across HyperLock clock styles.",
-        default = true
+        title = "Force depth effects on",
+        description = "Force the existing depth-effect preference on. Off leaves HyperLock's saved setting unchanged.",
+        default = false
     )
     val enableParallaxAnimation = boolOption(
         key = "enableParallaxAnimation",
-        title = "Parallax animations",
-        description = "Keep the app's per-clock parallax animation setting enabled.",
-        default = true
+        title = "Force parallax animation on",
+        description = "Force the existing parallax preference on. Off leaves HyperLock's saved setting unchanged.",
+        default = false
     )
 
     execute {
