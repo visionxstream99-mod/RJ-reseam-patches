@@ -112,12 +112,12 @@ val removeAds = patch("Remove ads") {
 
     execute {
         loadBannerAd.before {
-            thisObject.callVirtual("android.view.View", "setVisibility", "(I)V", listOf(int(8)))
+            thisObject.callVirtual("android.view.View", "setVisibility", "(I)V", int(8))
             returnVoid()
         }
 
         loadNativeAd.before {
-            thisObject.callVirtual("android.view.View", "setVisibility", "(I)V", listOf(int(8)))
+            thisObject.callVirtual("android.view.View", "setVisibility", "(I)V", int(8))
             returnVoid()
         }
 
