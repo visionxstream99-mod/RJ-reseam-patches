@@ -49,6 +49,7 @@ jobs:
           "$RESEAM_BIN" bundle list "$bundle" --trust "$pubkey" | tee "$RUNNER_TEMP/patch-list.txt"
           grep -Fq 'app.rj.adm.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
           grep -Fq 'app.rj.anixart.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
+          grep -Fq 'app.rj.hyperlock.patches.removeAds' "$RUNNER_TEMP/patch-list.txt"
 
       - name: Preserve build output when validation fails
         if: always()
