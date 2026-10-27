@@ -1,5 +1,5 @@
 [bundle]
-name = "example-patches"
-author = "Your Name"
-description = "Example patches for Reseam"
+name = "rj-reseam-patches"
+author = "RJ"
+description = "Community Android app customizations and patches for Reseam"
 format_version = 1
