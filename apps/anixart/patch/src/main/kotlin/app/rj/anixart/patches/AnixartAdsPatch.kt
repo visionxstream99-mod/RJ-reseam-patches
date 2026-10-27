@@ -82,7 +82,7 @@ private val kodikLayoutInflater = kodikOnCreate.point("Kodik ad activity layout 
  * instance invoke to a static extension method.
  */
 private val anixartHooks = ExtClass("app.rj.anixart.extension.AnixartAdHooks")
-private val alwaysTruePreference = anixartHooks.static(
+private val alwaysTruePreference by anixartHooks.static(
     "android.content.SharedPreferences",
     Type.String,
     Type.Boolean,
