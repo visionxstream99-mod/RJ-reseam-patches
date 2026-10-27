@@ -1,105 +1,67 @@
-name: inspect-hyperlock-apk
+name: inspect-hyperlock-archive
 
 on:
   push:
     branches: [work/hyperlock-analysis]
     paths:
       - ".github/workflows/hyperlock-analysis.yml"
-      - "apps/hyperlock/**"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  inspect:
+  inventory:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
           ref: work/hyperlock-analysis
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
-      - name: Download and extract APKCube archive
+      - name: Download and verify HyperLock release archive
         shell: bash
         run: |
           set -euo pipefail
           url="https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/download/apk/HyperLock-Screen-AOD_0.1.2_apkcube.zip"
-          curl -fL --retry 3 "$url" -o "$RUNNER_TEMP/hyperlock.zip"
+          curl -fL --retry 2 "$url" -o "$RUNNER_TEMP/hyperlock.zip"
           echo "63aec7722410be0f3eb00fbdc54f54df2b986777de2cdd1d482c759ade02876b  $RUNNER_TEMP/hyperlock.zip" | sha256sum -c -
-          echo "Outer ZIP contents:"
-          unzip -l "$RUNNER_TEMP/hyperlock.zip" | sed -n '1,80p'
-          mkdir -p "$RUNNER_TEMP/hyperlock-input"
-          unzip -q "$RUNNER_TEMP/hyperlock.zip" -d "$RUNNER_TEMP/hyperlock-input"
-          for depth in 1 2 3; do
-            find "$RUNNER_TEMP/hyperlock-input" -type f \( -iname '*.zip' -o -iname '*.xapk' -o -iname '*.apks' -o -iname '*.apkcube' \) ! -path '*.expanded/*' -print0 > "$RUNNER_TEMP/archive-list-$depth.bin"
-            while IFS= read -r -d '' archive; do
-              if file -b "$archive" | grep -qi 'Zip archive data'; then
-                out="$archive.expanded"
-                if [ ! -d "$out" ]; then
-                  echo "Expanding nested archive: $archive"
-                  mkdir -p "$out"
-                  unzip -oq "$archive" -d "$out" || true
-                fi
-              fi
-            done < "$RUNNER_TEMP/archive-list-$depth.bin"
-          done
-          echo "Extracted file inventory:"
-          find "$RUNNER_TEMP/hyperlock-input" -maxdepth 5 -type f -printf '%p (%s bytes)\n' | sed -n '1,120p'
-          find "$RUNNER_TEMP/hyperlock-input" -type f -iname '*.apk' -print | sort | tee "$RUNNER_TEMP/apks.txt"
-          test -s "$RUNNER_TEMP/apks.txt"
-      - name: Decompile APKs
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl -fL --retry 3 "https://github.com/skylot/jadx/releases/download/v1.5.1/jadx-1.5.1.zip" -o "$RUNNER_TEMP/jadx.zip"
-          mkdir -p "$RUNNER_TEMP/jadx"
-          unzip -q "$RUNNER_TEMP/jadx.zip" -d "$RUNNER_TEMP/jadx"
-          JADX="$(find "$RUNNER_TEMP/jadx" -type f -path '*/bin/jadx' -print -quit)"
-          test -x "$JADX"
-          mkdir -p "$RUNNER_TEMP/hyperlock-decompiled"
-          i=0
-          while IFS= read -r apk; do
-            i=$((i+1))
-            [ "$i" -le 10 ] || break
-            echo "Decompiling $apk"
-            "$JADX" --threads-count 2 -d "$RUNNER_TEMP/hyperlock-decompiled/$i" "$apk" || true
-          done < "$RUNNER_TEMP/apks.txt"
-      - name: Record compact app-specific inspection metadata
+      - name: Inventory archive without extracting it
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p analysis
-          {
-            echo "# HyperLock Screen & AOD 0.1.2 inspection"
-            echo
-            echo "This is selector research from the pinned APKCube release asset, not original app source."
-            echo
-            echo "## APK files and hashes"
-            while IFS= read -r apk; do sha256sum "$apk"; done < "$RUNNER_TEMP/apks.txt"
-            echo
-            echo "## Decoded package metadata"
-            find "$RUNNER_TEMP/hyperlock-decompiled" -path '*/resources/AndroidManifest.xml' -type f -print -exec grep -Eo 'package="[^"]+"|android:versionName="[^"]+"|android:versionCode="[^"]+"' {} \; || true
-            echo
-            echo "## App class files with ad-related references"
-            grep -R -n -E 'com\.google\.android\.gms\.ads|com\.google\.ads|com\.applovin|com\.unity3d\.ads|com\.facebook\.ads|com\.ironsource|com\.startapp|com\.inmobi|com\.appodeal|com\.chartboost|com\.vungle|AdView|InterstitialAd|RewardedAd|NativeAd|MobileAds|loadAd|showAd|admob|interstitial|banner.?ad|remove.?ads|no.?ads|premium' "$RUNNER_TEMP/hyperlock-decompiled"/*/sources/com/appiolab/hyperlockscreenos 2>/dev/null | sed -n '1,350p' || true
-            echo
-            echo "## Application source-file inventory"
-            find "$RUNNER_TEMP/hyperlock-decompiled" -path '*/sources/com/appiolab/hyperlockscreenos/*.java' -type f | sed "s|$RUNNER_TEMP/hyperlock-decompiled/||" | sed -n '1,250p'
-            echo
-            echo "## Ad SDK packages present in decompiled output"
-            for sdk in com/google/android/gms/ads com/applovin com/unity3d/ads com/facebook/ads com/ironsource com/startapp com/inmobi com/appodeal com/chartboost com/vungle; do
-              n=$(find "$RUNNER_TEMP/hyperlock-decompiled" -path "*/sources/$sdk/*" -type f 2>/dev/null | wc -l)
-              [ "$n" -gt 0 ] && echo "$sdk: $n classes" || true
-            done
-            echo
-            echo "## Relevant resource strings"
-            grep -R -n -i -E 'advert|admob|interstitial|banner|premium|remove.?ads|watch.?ad' "$RUNNER_TEMP/hyperlock-decompiled"/*/resources/res/values 2>/dev/null | sed -n '1,100p' || true
-          } > analysis/hyperlock-inspection.md
+          python3 - "$RUNNER_TEMP/hyperlock.zip" analysis/hyperlock-archive-inventory.md <<'PY'
+          import collections, hashlib, sys, zipfile
+          from pathlib import Path
+          archive = Path(sys.argv[1])
+          output = Path(sys.argv[2])
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+          z = zipfile.ZipFile(archive)
+          entries = z.infolist()
+          ext_counts = collections.Counter(Path(x.filename).suffix.lower() or "(no extension)" for x in entries if not x.is_dir())
+          lines = [
+              "HyperLock APKCube archive inventory",
+              "",
+              "Archive size: {:,} bytes".format(archive.stat().st_size),
+              "SHA-256: {}".format(digest),
+              "ZIP entries: {}".format(len(entries)),
+              "",
+              "File extensions:",
+          ]
+          for ext, count in ext_counts.most_common():
+              lines.append("{}: {}".format(ext, count))
+          lines += ["", "Archive paths (first 500 entries):"]
+          for item in entries[:500]:
+              lines.append("{} — {:,} bytes".format(item.filename, item.file_size))
+          lines += ["", "Candidate nested archives and APKs:"]
+          candidates = [x for x in entries if Path(x.filename).suffix.lower() in {".apk", ".xapk", ".apks", ".zip", ".apkcube", ".jar", ".aar", ".dex"}]
+          for item in candidates[:500]:
+              lines.append("{} — {:,} bytes".format(item.filename, item.file_size))
+          output.write_text("\n".join(lines) + "\n")
+          print("Wrote {} ({} entries)".format(output, len(entries)))
+          PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add analysis/hyperlock-inspection.md
-          git commit -m "chore: record HyperLock APK inspection [skip ci]"
-          git push origin "HEAD:$GITHUB_REF_NAME"
+          git add analysis/hyperlock-archive-inventory.md
+          git commit -m "chore: inventory HyperLock source archive [skip ci]"
+          git push origin "HEAD:work/hyperlock-analysis"
