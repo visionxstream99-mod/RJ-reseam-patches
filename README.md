@@ -14,13 +14,18 @@ A community patch bundle maintained by **RJ** — with version-aware patches, cl
 
 ---
 
-## About
+## Patch catalogue
 
-RJ Reseam Patches is a patch bundle for Android apps that use the [Reseam](https://reseam.app) patching ecosystem. The goal is to provide useful customizations with accurate target-app details, transparent behavior, and compatibility notes that distinguish tested builds from experimental work.
+| App | Patch | Target | Current status |
+|---|---|---|---|
+| Advanced Download Manager (ADM) | Remove ads | `com.dv.adm` · 7.6 / 70620 | Source reconstructed from the old RJ bundle; current build and dry-run pending |
+| Anixart | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Reseam-native source added; current build, dry-run, and runtime test pending |
 
-This repository started from the official Reseam bundle template. The template's example patches and build configuration are scaffolding, not finished RJ app-specific patches. They will be replaced or clearly identified as the project develops.
+The implementations are in [PATCHES.md](PATCHES.md). The Anixart patch has separate options for banner ads, interstitial ads, and Kodik pre-roll behavior. It targets the `com.swiftsoft.anixartd` package only; Anixart Lite and other versions are not claimed as compatible.
 
-## Quick start
+**No current signed release is being advertised yet.** The previous ADM artifact was built for Reseam engine 0.29.0, while this repository uses the 0.32.0 workspace. It must be rebuilt and tested rather than reused as-is.
+
+## Add the source
 
 1. Install [Reseam Manager](https://reseam.app) from its official source.
 2. Open the **Add source to Reseam** link at the top of this README, or paste this repository URL into Reseam Manager's source-add flow:
@@ -30,23 +35,6 @@ This repository started from the official Reseam bundle template. The template's
 
 If the add link does not open the app, update Reseam Manager and follow its in-app source import instructions.
 
-## Patch catalogue
-
-Patch availability is defined by the source and published releases. Check [Releases](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases) for downloadable bundles and release notes.
-
-Every RJ patch should document:
-
-| Field | What you'll find |
-|---|---|
-| Target app | App name and Android package ID |
-| Patch identity | Exact patch name and unique ID |
-| Compatibility | Intended and actually tested app versions |
-| Behavior | What changes when the patch is enabled |
-| Limitations | Known issues, dependencies, and side effects |
-| Release | Bundle version and release notes |
-
-**Important:** starter-template examples are not proof that an app-specific patch exists. Do not assume a patch is available unless it appears in the source or a published release.
-
 ## Building from source
 
 ### Requirements
@@ -55,7 +43,7 @@ Every RJ patch should document:
 - Android SDK, with `ANDROID_HOME` configured
 - Reseam CLI matching the plugin version in `settings.gradle.kts`
 - Gradle wrapper included in the repository
-- A bundle signing key
+- A bundle signing key for release builds
 
 Keep the signing key private. Never commit `.key`, keystore files, access tokens, or other secrets.
 
@@ -66,14 +54,14 @@ Keep the signing key private. Never commit `.key`, keystore files, access tokens
 reseam bundle list build/reseam/rj-reseam-patches.reseam
 ```
 
-The exact generated artifact name can depend on the project and release configuration. Use the file produced under `build/reseam/`.
+The generated artifact name can depend on the project configuration. Inspect the file produced under `build/reseam/`.
 
 ### Publish a release
 
 The GitHub Actions workflow in `.github/workflows/release.yml` is configured to build and publish on version tags matching `v*`.
 
 1. Add the base64-encoded signing key as the repository Actions secret `BUNDLE_SIGNING_KEY_B64`.
-2. Confirm the workflow, build, patch metadata, and bundle contents before releasing.
+2. Confirm the build, target matching, patch metadata, and bundle contents before releasing.
 3. Create and push a version tag, for example `v0.1.0`, only when the bundle is ready for users.
 
 Never publish an untested artifact as stable. Release notes should state target app versions, patch IDs, behavior changes, known issues, and any migration steps.
@@ -83,19 +71,18 @@ Never publish an untested artifact as stable. Release notes should state target 
 ```text
 manifest.toml                 Bundle name, author, and description
 settings.gradle.kts           Reseam workspace plugin and project name
-apps/<app>/patch/              Patch modules for a target app
-apps/<app>/extensions/         Optional injected extension code
-apps/<app>/settings/           Optional in-app settings and strings
-shared/<name>/                 Shared extension modules
-.github/workflows/release.yml  Tagged release automation
+apps/adm/patch/               ADM Remove ads source
+apps/anixart/patch/           Anixart Remove ads source
+apps/anixart/README.md        Target, attribution, and verification notes
+.github/workflows/release.yml Tagged release automation
 NOTICE                        Reseam license attribution and additional terms
 ```
 
 Modules are configured by the Reseam workspace Gradle plugin. See the [Reseam authoring documentation](https://reseam.app/docs/authoring/start/) and [first patch guide](https://reseam.app/docs/authoring/first_patch/).
 
-## Contribution guidelines
+## Verification policy
 
-Before submitting a patch, provide the target app name, package ID, exact version, unique patch ID, intended behavior, test results, known limitations, and required upstream notices.
+A successful compile is not proof that a patch works at runtime. Before release, run each patch's Reseam dry-run against the exact target APK, verify every selector resolves uniquely, and test the patched app. This is especially important for bytecode targets based on obfuscated app methods.
 
 ## Security and trust
 
@@ -109,4 +96,4 @@ Before submitting a patch, provide the target app name, package ID, exact versio
 
 This project uses the Reseam bundle template and preserves the upstream `NOTICE` and licensing terms. Reseam and its logos are trademarks or property of their respective owners; this project is independent and is not endorsed by the Reseam developers.
 
-Individual patches may have their own upstream notices or license requirements. Those must be preserved, and third-party app code is not relicensed merely by being included here.
+The Anixart patch is a Reseam-native implementation informed by the public target/behavior notes from [Error404rt/Anixart-patches](https://github.com/Error404rt/Anixart-patches), which identifies its Anixart patch as GPLv3. See [apps/anixart/README.md](apps/anixart/README.md) for the patch's attribution and license. Third-party app code is not included.
