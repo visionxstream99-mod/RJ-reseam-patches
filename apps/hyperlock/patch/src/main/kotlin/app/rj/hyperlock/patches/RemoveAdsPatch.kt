@@ -13,6 +13,7 @@ private val HYPERLOCK = CompatiblePackage(
 )
 
 private val bannerAdLayout = klass("com.applovin.mediation.BannerAdLayout")
+private val nativeAdLayout = klass("com.applovin.mediation.NativeAdLayout")
 private val interstitialAdManager = klass("com.applovin.mediation.InterstitialAdManager")
 private val adCallback = klass("com.applovin.mediation.InterstitialAdManager\$AdCallback")
 
@@ -40,6 +41,13 @@ private val loadBannerAd = method("HyperLock banner ad loader") {
  * loading/display. App screens call these methods to preload or show interstitials.
  * Match the stable owner and full parameter signatures, not obfuscated callers.
  */
+private val loadNativeAd = method("HyperLock native ad loader") {
+    inClass(nativeAdLayout)
+    name("loadAd")
+    params(Type.String)
+    returns(Type.Void)
+}
+
 private val loadInterstitialAd = method("HyperLock interstitial ad loader") {
     inClass(interstitialAdManager)
     name("loadAd")
@@ -82,12 +90,13 @@ private val showInterstitialWithoutCount = method("HyperLock uncounted interstit
 
 val removeAds = patch("Remove ads") {
     description(
-        "Blocks HyperLock 0.1.2 banner and interstitial/reward-fallback ad loading and display."
+        "Blocks HyperLock 0.1.2 banner, native, interstitial, and reward-fallback ad loading and display."
     )
     compatibleWith(HYPERLOCK)
 
     execute {
         loadBannerAd.before { returnVoid() }
+        loadNativeAd.before { returnVoid() }
         loadInterstitialAd.before { returnVoid() }
         showInterstitialWithCount.before {
             val callback = param(2)
