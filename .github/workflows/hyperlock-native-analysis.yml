@@ -88,8 +88,14 @@ jobs:
                       continue
                   lines.append("## {} — {}".format(class_desc, p.relative_to(root)))
                   lines.append(method)
-                  if len(block) <= 260:
+                  show_full = (
+                      p.name == "AllImagesSeeActivity.smali"
+                      and "m(Lf25;)V" in method
+                  )
+                  if len(block) <= 260 or show_full:
                       for n, line in block:
+                          if show_full and (not line.strip() or line.strip().startswith(".line")):
+                              continue
                           lines.append("{:5d}: {}".format(n, line.rstrip()[:300]))
                   else:
                       selected_lines = set()
