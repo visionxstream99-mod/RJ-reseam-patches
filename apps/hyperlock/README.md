@@ -11,6 +11,6 @@ The patch blocks the embedded `BannerAdLayout.loadAd(String)` entry point used b
 
 The target signatures were identified from the supplied APKCube/apktool Smali archive, including the custom banner widget and interstitial manager. This is a Reseam-native patch; it does not include or distribute HyperLock application code.
 
-## Verification status
+## Build and runtime verification status
 
 The selectors are based on the supplied HyperLock 0.1.2 archive. The patch still needs a successful workspace build, an exact-target Reseam dry-run, and a runtime test in HyperLock. A successful compile alone does not prove banner and interstitial ads are gone or that every screen transition behaves correctly. Do not treat this source entry as a verified release.
