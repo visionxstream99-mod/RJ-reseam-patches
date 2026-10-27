@@ -15,4 +15,4 @@ plugins {
     id("app.reseam.workspace") version "0.32.0"
 }
 
-rootProject.name = "example-patches"
+rootProject.name = "rj-reseam-patches"
