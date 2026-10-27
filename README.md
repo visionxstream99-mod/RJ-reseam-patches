@@ -19,11 +19,12 @@ A community patch bundle maintained by **RJ** — with version-aware patches, cl
 | App | Patch | Target | Current status |
 |---|---|---|---|
 | Advanced Download Manager (ADM) | Remove ads | `com.dv.adm` · 7.6 / 70620 | Reconstructed from the old RJ bundle; source build and dry-run validation pending |
-| Anixart | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Reseam-native source added; APK dry-run and runtime test pending |
+| Anixart | Remove ads | `com.swiftsoft.anixartd` · 10.5 | Reseam-native source; APK dry-run and runtime test pending |
+| HyperLock Screen & AOD | Remove ads | `com.appiolab.hyperlockscreenos` · 0.1.2 | Source added from supplied Smali archive; workspace build, dry-run and runtime test pending |
 
-The implementations are in [PATCHES.md](PATCHES.md). The Anixart patch has separate options for banner ads, interstitial ads, and Kodik pre-roll behavior. It targets the `com.swiftsoft.anixartd` package only; Anixart Lite and other versions are not claimed as compatible.
+The implementations are in [PATCHES.md](PATCHES.md). The Anixart patch has separate options for banner ads, interstitial ads, and Kodik pre-roll behavior. It targets the `com.swiftsoft.anixartd` package only; Anixart Lite and other versions are not claimed as compatible. HyperLock targets version 0.1.2 only; other versions are not claimed as compatible.
 
-**No current signed release is published.** The recovered ADM artifact was built for Reseam engine 0.29.0, while this repository uses workspace plugin 0.32.0. It must be rebuilt and tested rather than reused unchanged.
+**No current signed release is published.** The HyperLock patch is newly authored and remains unverified until its selector dry-run and runtime test pass. The recovered ADM artifact was built for Reseam engine 0.29.0, while this repository uses workspace plugin 0.32.0. It must be rebuilt and tested rather than reused unchanged.
 
 ## Add the source
 
@@ -73,6 +74,8 @@ manifest.toml                              Bundle identity and license
 settings.gradle.kts                        Reseam workspace plugin version
 apps/adm/patch/                            ADM Remove ads source
 apps/anixart/patch/                        Anixart Remove ads source
+apps/hyperlock/patch/                      HyperLock Remove ads source
+apps/hyperlock/README.md                   HyperLock targets and verification notes
 apps/anixart/extensions/anixart/            Kodik preference hook
 apps/anixart/LICENSE                       GPLv3 license for the Anixart patch
 apps/anixart/README.md                     Target, attribution, and verification notes
