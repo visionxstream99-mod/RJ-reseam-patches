@@ -5,6 +5,7 @@
 - Target version: Anixart 10.5
 - Options: banner ads, interstitial ads, Kodik pre-roll/information prompt
 - Source: `patch/src/main/kotlin/app/rj/anixart/patches/AnixartAdsPatch.kt`
+- Hook: `extensions/anixart/src/main/java/app/rj/anixart/extension/AnixartAdHooks.java`
 
 ## Behavior
 
@@ -14,8 +15,8 @@ This target is for package `com.swiftsoft.anixartd` version `10.5`. It does not 
 
 ## Provenance and license
 
-This Reseam-native implementation was reconstructed using public feature and target evidence from [Error404rt/Anixart-patches](https://github.com/Error404rt/Anixart-patches), which identifies its Anixart patch as GPLv3. The upstream Morphe implementation has not been copied into this Reseam module. This source file is licensed under GPL-3.0-or-later; see [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.txt).
+This Reseam-native implementation was reconstructed using public feature and target evidence from [Error404rt/Anixart-patches](https://github.com/Error404rt/Anixart-patches), which identifies its Anixart patch as GPLv3. The upstream Morphe implementation has not been copied into this Reseam module. This source and helper are licensed under GPL-3.0-or-later; the full license text is included in this directory's [LICENSE](LICENSE) file.
 
 ## Verification status
 
-Source has been added, but it has **not yet been compiled, dry-run against an Anixart 10.5 APK, or tested at runtime**. Do not publish it as a verified release until all three checks pass. Reseam requires each code target to resolve uniquely; the exact app build must be used to validate the anchors.
+Source has been added, but this patch is **not yet confirmed as a working release**. It must compile, dry-run against an original Anixart 10.5 APK with every target resolving uniquely, and pass runtime checks for playback and navigation before publication.
