@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: \${{ github.ref_name }}
+          ref: work/hyperlock-analysis
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
