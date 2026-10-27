@@ -30,7 +30,7 @@ jobs:
           curl -fL --retry 3 "$url" -o "$RUNNER_TEMP/hyperlock.zip"
           echo "63aec7722410be0f3eb00fbdc54f54df2b986777de2cdd1d482c759ade02876b  $RUNNER_TEMP/hyperlock.zip" | sha256sum -c -
           echo "Outer ZIP contents:"
-          unzip -l "$RUNNER_TEMP/hyperlock.zip" | head -n 80
+          unzip -l "$RUNNER_TEMP/hyperlock.zip" | sed -n '1,80p'
           mkdir -p "$RUNNER_TEMP/hyperlock-input"
           unzip -q "$RUNNER_TEMP/hyperlock.zip" -d "$RUNNER_TEMP/hyperlock-input"
           for depth in 1 2 3; do
@@ -47,7 +47,7 @@ jobs:
             done < "$RUNNER_TEMP/archive-list-$depth.bin"
           done
           echo "Extracted file inventory:"
-          find "$RUNNER_TEMP/hyperlock-input" -maxdepth 5 -type f -printf '%p (%s bytes)\n' | head -n 120
+          find "$RUNNER_TEMP/hyperlock-input" -maxdepth 5 -type f -printf '%p (%s bytes)\n' | sed -n '1,120p'
           find "$RUNNER_TEMP/hyperlock-input" -type f -iname '*.apk' -print | sort | tee "$RUNNER_TEMP/apks.txt"
           test -s "$RUNNER_TEMP/apks.txt"
       - name: Decompile APKs
@@ -57,7 +57,7 @@ jobs:
           curl -fL --retry 3 "https://github.com/skylot/jadx/releases/download/v1.5.1/jadx-1.5.1.zip" -o "$RUNNER_TEMP/jadx.zip"
           mkdir -p "$RUNNER_TEMP/jadx"
           unzip -q "$RUNNER_TEMP/jadx.zip" -d "$RUNNER_TEMP/jadx"
-          JADX="$(find "$RUNNER_TEMP/jadx" -type f -path '*/bin/jadx' | head -n 1)"
+          JADX="$(find "$RUNNER_TEMP/jadx" -type f -path '*/bin/jadx' -print -quit)"
           test -x "$JADX"
           mkdir -p "$RUNNER_TEMP/hyperlock-decompiled"
           i=0
@@ -84,10 +84,10 @@ jobs:
             find "$RUNNER_TEMP/hyperlock-decompiled" -path '*/resources/AndroidManifest.xml' -type f -print -exec grep -Eo 'package="[^"]+"|android:versionName="[^"]+"|android:versionCode="[^"]+"' {} \; || true
             echo
             echo "## App class files with ad-related references"
-            grep -R -n -E 'com\.google\.android\.gms\.ads|com\.google\.ads|com\.applovin|com\.unity3d\.ads|com\.facebook\.ads|com\.ironsource|com\.startapp|com\.inmobi|com\.appodeal|com\.chartboost|com\.vungle|AdView|InterstitialAd|RewardedAd|NativeAd|MobileAds|loadAd|showAd|admob|interstitial|banner.?ad|remove.?ads|no.?ads|premium' "$RUNNER_TEMP/hyperlock-decompiled"/*/sources/com/appiolab/hyperlockscreenos 2>/dev/null | head -n 350 || true
+            grep -R -n -E 'com\.google\.android\.gms\.ads|com\.google\.ads|com\.applovin|com\.unity3d\.ads|com\.facebook\.ads|com\.ironsource|com\.startapp|com\.inmobi|com\.appodeal|com\.chartboost|com\.vungle|AdView|InterstitialAd|RewardedAd|NativeAd|MobileAds|loadAd|showAd|admob|interstitial|banner.?ad|remove.?ads|no.?ads|premium' "$RUNNER_TEMP/hyperlock-decompiled"/*/sources/com/appiolab/hyperlockscreenos 2>/dev/null | sed -n '1,350p' || true
             echo
             echo "## Application source-file inventory"
-            find "$RUNNER_TEMP/hyperlock-decompiled" -path '*/sources/com/appiolab/hyperlockscreenos/*.java' -type f | sed "s|$RUNNER_TEMP/hyperlock-decompiled/||" | head -n 250
+            find "$RUNNER_TEMP/hyperlock-decompiled" -path '*/sources/com/appiolab/hyperlockscreenos/*.java' -type f | sed "s|$RUNNER_TEMP/hyperlock-decompiled/||" | sed -n '1,250p'
             echo
             echo "## Ad SDK packages present in decompiled output"
             for sdk in com/google/android/gms/ads com/applovin com/unity3d/ads com/facebook/ads com/ironsource com/startapp com/inmobi com/appodeal com/chartboost com/vungle; do
@@ -96,7 +96,7 @@ jobs:
             done
             echo
             echo "## Relevant resource strings"
-            grep -R -n -i -E 'advert|admob|interstitial|banner|premium|remove.?ads|watch.?ad' "$RUNNER_TEMP/hyperlock-decompiled"/*/resources/res/values 2>/dev/null | head -n 100 || true
+            grep -R -n -i -E 'advert|admob|interstitial|banner|premium|remove.?ads|watch.?ad' "$RUNNER_TEMP/hyperlock-decompiled"/*/resources/res/values 2>/dev/null | sed -n '1,100p' || true
           } > analysis/hyperlock-inspection.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
