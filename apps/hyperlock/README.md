@@ -7,7 +7,7 @@
 
 ## Behavior
 
-The patch blocks the embedded `BannerAdLayout.loadAd(String)` entry point used by the app's banner placements, and blocks the embedded interstitial manager's load/show entry points. When a show request is suppressed, it invokes the manager callback's `c()` unavailable/failure continuation when present, then returns without displaying an ad.
+The patch blocks the embedded `BannerAdLayout.loadAd(String)` and `NativeAdLayout.loadAd(String)` entry points used for banner and native ad placements, and blocks the embedded interstitial manager's load/show entry points. When a show request is suppressed, it invokes the manager callback's `c()` unavailable/failure continuation when present, then returns without displaying an ad.
 
 The target signatures were identified from the supplied APKCube/apktool Smali archive, including the custom banner widget and interstitial manager. This is a Reseam-native patch; it does not include or distribute HyperLock application code.
 
