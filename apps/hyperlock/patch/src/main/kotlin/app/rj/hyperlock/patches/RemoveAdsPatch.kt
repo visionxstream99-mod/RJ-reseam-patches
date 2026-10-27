@@ -19,10 +19,9 @@ private val appOpenManager = klass("com.applovin.mediation.AppOpenManager")
 private val adCallback = klass("com.applovin.mediation.InterstitialAdManager\$AdCallback")
 
 /*
- * HyperLock 0.1.2 base.dex contains the callback methods below.
- * c() is used by the regular interstitial path when an ad is unavailable.
- * a() is the corresponding no-ad path used by showAdWithRewardFallback;
- * keeping that distinction avoids invoking the wrong completion callback.
+ * Confirmed in HyperLock 0.1.2 base.dex. c() is the regular interstitial
+ * no-ad callback; a() is the no-ad callback used by showAdWithRewardFallback.
+ * Preserve this distinction so the patch doesn't send the wrong completion.
  */
 private val continueWithoutAd = method("HyperLock interstitial no-ad callback") {
     inClass(adCallback)
@@ -39,9 +38,10 @@ private val continueWithRewardFallbackNoAd = method("HyperLock fallback no-ad ca
 }
 
 /*
- * Verified in HyperLock 0.1.2 base.dex:
- * banner/native loadAd(String), interstitial loadAd(Activity,String),
- * interstitial show methods, and AppOpenManager.b() are present.
+ * Verified in the supplied HyperLock 0.1.2 base.dex:
+ * BannerAdLayout.loadAd(String), NativeAdLayout.loadAd(String),
+ * InterstitialAdManager.loadAd(Activity,String), its three show entry points,
+ * and AppOpenManager.b() (which loads the Google app-open ad).
  */
 private val loadBannerAd = method("HyperLock banner ad loader") {
     inClass(bannerAdLayout)
@@ -106,13 +106,21 @@ private val showInterstitialWithoutCount = method("HyperLock uncounted interstit
 
 val removeAds = patch("Remove ads") {
     description(
-        "Blocks HyperLock 0.1.2 banner, native, interstitial, and app-open ad entry points. Preserves Play Store validation and purchase/entitlement checks."
+        "Removes HyperLock 0.1.2 banner, native, interstitial, and app-open ads while preserving Play Store validation and purchase/entitlement checks."
     )
     compatibleWith(HYPERLOCK)
 
     execute {
-        loadBannerAd.before { returnVoid() }
-        loadNativeAd.before { returnVoid() }
+        loadBannerAd.before {
+            thisObject.callVirtual("android.view.View", "setVisibility", "(I)V", listOf(int(8)))
+            returnVoid()
+        }
+
+        loadNativeAd.before {
+            thisObject.callVirtual("android.view.View", "setVisibility", "(I)V", listOf(int(8)))
+            returnVoid()
+        }
+
         loadInterstitialAd.before { returnVoid() }
         loadAppOpenAd.before { returnVoid() }
 
