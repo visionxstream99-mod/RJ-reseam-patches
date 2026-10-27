@@ -28,10 +28,10 @@ This catalogue separates recovered source from verified releases. A source entry
 - Patch ID: `app.rj.hyperlock.patches.removeAds`
 - Package: `com.appiolab.hyperlockscreenos`
 - Target version: HyperLock Screen & AOD 0.1.2
-- Behavior: blocks banner/native ad loading and interstitial/reward-fallback load/show entry points. An unverified app-open lifecycle interception was removed to avoid interfering with app startup. It does not change purchase logic or Play Store validation.
+- Behavior: hides banner/native ad views, blocks banner/native/interstitial loading, suppresses interstitial and reward-fallback showing through their no-ad callbacks, and blocks the app-open ad loader. It does not change purchase logic or Play Store validation.
 - Source: `apps/hyperlock/patch/src/main/kotlin/app/rj/hyperlock/patches/RemoveAdsPatch.kt`
 - Research: the target classes and full method signatures were checked against the supplied original APKS `base.apk`.
-- Verification: the current CI run successfully built the bundle and confirmed both HyperLock patch IDs. Static DEX signature checks passed against the supplied base.apk. A true Reseam dry-run and an in-app runtime test are still required; no runtime success is claimed.
+- Verification: the latest CI build succeeded and confirmed both HyperLock patch IDs. Static DEX checks of the supplied base.apk confirm the named targets and callback signatures. An exact-target Reseam dry-run and device runtime test are still required; no runtime success is claimed.
 
 ## HyperLock Screen & AOD — Customize HyperLock
 
