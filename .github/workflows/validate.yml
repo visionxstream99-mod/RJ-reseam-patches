@@ -95,14 +95,7 @@ jobs:
           pubkey="$(python -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("manifest.pubkey").hex())' "$bundle")"
           output="$RUNNER_TEMP/patched-pinterest-14.42.0"
           "$RESEAM_BIN" info "$PINTEREST_TARGET"
-          "$RESEAM_BIN" patch "$PINTEREST_TARGET" \\
-            --bundle "$bundle" \\
-            --trust "$pubkey" \\
-            --output-dir "$output" \\
-            --enable app.rj.pinterest.patches.removeAdvertisingIdPermission \\
-            --enable app.rj.pinterest.patches.optOutGoogleAnalytics \\
-            --enable app.rj.pinterest.patches.disablePrivacySandboxAdServices \\
-            --enable app.rj.pinterest.patches.disableGoogleEngageReceiver
+          "$RESEAM_BIN" patch "$PINTEREST_TARGET" --bundle "$bundle" --trust "$pubkey" --output-dir "$output" --enable app.rj.pinterest.patches.removeAdvertisingIdPermission --enable app.rj.pinterest.patches.optOutGoogleAnalytics --enable app.rj.pinterest.patches.disablePrivacySandboxAdServices --enable app.rj.pinterest.patches.disableGoogleEngageReceiver
           test -s "$output/base.apk"
           "$RESEAM_BIN" info "$output/base.apk"
           echo "Patched APK set created at $output"
