@@ -15,19 +15,33 @@ private val HYPERLOCK = CompatiblePackage(
 private val bannerAdLayout = klass("com.applovin.mediation.BannerAdLayout")
 private val nativeAdLayout = klass("com.applovin.mediation.NativeAdLayout")
 private val interstitialAdManager = klass("com.applovin.mediation.InterstitialAdManager")
+private val appOpenManager = klass("com.applovin.mediation.AppOpenManager")
 private val adCallback = klass("com.applovin.mediation.InterstitialAdManager\$AdCallback")
 
-private val continueWithoutAd = method("HyperLock ad-unavailable callback") {
+/*
+ * HyperLock 0.1.2 base.dex contains the callback methods below.
+ * c() is used by the regular interstitial path when an ad is unavailable.
+ * a() is the corresponding no-ad path used by showAdWithRewardFallback;
+ * keeping that distinction avoids invoking the wrong completion callback.
+ */
+private val continueWithoutAd = method("HyperLock interstitial no-ad callback") {
     inClass(adCallback)
     name("c")
     params()
     returns(Type.Void)
 }
 
+private val continueWithRewardFallbackNoAd = method("HyperLock fallback no-ad callback") {
+    inClass(adCallback)
+    name("a")
+    params()
+    returns(Type.Void)
+}
+
 /*
- * Confirmed in HyperLock 0.1.2's base.dex:
- * BannerAdLayout.loadAd(String), NativeAdLayout.loadAd(String), and the
- * InterstitialAdManager load/show methods are present with these signatures.
+ * Verified in HyperLock 0.1.2 base.dex:
+ * banner/native loadAd(String), interstitial loadAd(Activity,String),
+ * interstitial show methods, and AppOpenManager.b() are present.
  */
 private val loadBannerAd = method("HyperLock banner ad loader") {
     inClass(bannerAdLayout)
@@ -47,6 +61,13 @@ private val loadInterstitialAd = method("HyperLock interstitial ad loader") {
     inClass(interstitialAdManager)
     name("loadAd")
     params("android.app.Activity", Type.String)
+    returns(Type.Void)
+}
+
+private val loadAppOpenAd = method("HyperLock app-open ad loader") {
+    inClass(appOpenManager)
+    name("b")
+    params()
     returns(Type.Void)
 }
 
@@ -85,7 +106,7 @@ private val showInterstitialWithoutCount = method("HyperLock uncounted interstit
 
 val removeAds = patch("Remove ads") {
     description(
-        "Blocks HyperLock 0.1.2 banner, native, and interstitial ad entry points. Does not modify purchase or Play Store validation."
+        "Blocks HyperLock 0.1.2 banner, native, interstitial, and app-open ad entry points. Preserves Play Store validation and purchase/entitlement checks."
     )
     compatibleWith(HYPERLOCK)
 
@@ -93,6 +114,8 @@ val removeAds = patch("Remove ads") {
         loadBannerAd.before { returnVoid() }
         loadNativeAd.before { returnVoid() }
         loadInterstitialAd.before { returnVoid() }
+        loadAppOpenAd.before { returnVoid() }
+
         showInterstitialWithCount.before {
             val callback = param(2)
             whenNotNull(callback) {
@@ -100,13 +123,15 @@ val removeAds = patch("Remove ads") {
             }
             returnVoid()
         }
+
         showInterstitialWithRewardFallback.before {
             val callback = param(2)
             whenNotNull(callback) {
-                callback.call(continueWithoutAd)
+                callback.call(continueWithRewardFallbackNoAd)
             }
             returnVoid()
         }
+
         showInterstitialWithoutCount.before {
             val callback = param(2)
             whenNotNull(callback) {
@@ -114,5 +139,5 @@ val removeAds = patch("Remove ads") {
             }
             returnVoid()
         }
-            }
+    }
 }
