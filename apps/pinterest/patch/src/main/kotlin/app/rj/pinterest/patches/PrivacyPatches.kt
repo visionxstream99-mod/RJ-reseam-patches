@@ -4,7 +4,7 @@
 
 package app.rj.pinterest.patches
 
-import app.reseam.patch.patch
+import app.reseam.patch.*
 
 private val PINTEREST_14_42 = "com.pinterest"("14.42.0")
 
@@ -18,7 +18,6 @@ val removeAdvertisingIdPermission = patch("Remove Advertising ID permission") {
 
     execute {
         manifest.edit {
-            val rootElement = root
             val matches = findByTag("uses-permission").filter {
                 it["android:name"] == "com.google.android.gms.permission.AD_ID"
             }
@@ -26,7 +25,7 @@ val removeAdvertisingIdPermission = patch("Remove Advertising ID permission") {
             check(matches.size == 1) {
                 "Expected one Google Advertising ID permission, found ${matches.size}."
             }
-            matches.forEach { rootElement.removeChild(it) }
+            matches.single().remove()
         }
     }
 }
@@ -48,10 +47,8 @@ val optOutGoogleAnalytics = patch("Opt out of Google Analytics") {
         )
 
         manifest.edit {
-            val application = findByTag("application").single()
-
             for (name in flags) {
-                val matches = application.findByTag("meta-data").filter {
+                val matches = findByTag("meta-data").filter {
                     it["android:name"] == name
                 }
                 check(matches.size == 1) {
@@ -73,15 +70,14 @@ val disablePrivacySandboxAdServices = patch("Disable Privacy Sandbox Ad Services
 
     execute {
         manifest.edit {
-            val application = findByTag("application").single()
-            val matches = application.findByTag("property").filter {
+            val matches = findByTag("property").filter {
                 it["android:name"] == "android.adservices.AD_SERVICES_CONFIG"
             }
 
             check(matches.size == 1) {
                 "Expected one Android Ad Services config property, found ${matches.size}."
             }
-            matches.forEach { application.removeChild(it) }
+            matches.single().remove()
         }
     }
 }
