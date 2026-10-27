@@ -29,26 +29,127 @@ Inspection only; this file is not an installable patch.
 ## .class public final Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity; — smali/com/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity.smali
 .method public final m(Lf25;)V
   123: .method public final m(Lf25;)V
-  476:     .line 178
+  124:     .locals 9
+  127:     iget-object v0, p0, Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity;->mixedList:Ljava/util/ArrayList;
+  131:     invoke-virtual {v0}, Ljava/util/ArrayList;->clear()V
+  136:     iget-object v0, p0, Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity;->mixedList:Ljava/util/ArrayList;
+  140:     const v1, 0x7f0700e7
+  145:     invoke-static {v1}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+  150:     move-result-object v1
+  153:     invoke-virtual {v0, v1}, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+  158:     const/4 v0, 0x1
+  161:     const/4 v1, 0x0
+  164:     if-eqz p1, :cond_3
+  168:     invoke-virtual {p1}, Lf25;->getBase_url()Ljava/lang/String;
+  173:     move-result-object v2
+  176:     const-string v3, "/"
+  180:     invoke-static {v2, v3, v1}, Lbb4;->endsWith(Ljava/lang/String;Ljava/lang/String;Z)Z
+  185:     move-result v2
+  188:     if-eqz v2, :cond_0
+  192:     invoke-virtual {p1}, Lf25;->getBase_url()Ljava/lang/String;
+  197:     move-result-object v2
+  200:     goto :goto_0
+  203:     :cond_0
+  204:     invoke-virtual {p1}, Lf25;->getBase_url()Ljava/lang/String;
+  209:     move-result-object v2
+  212:     new-instance v4, Ljava/lang/StringBuilder;
+  216:     invoke-direct {v4}, Ljava/lang/StringBuilder;-><init>()V
+  221:     invoke-virtual {v4, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+  226:     invoke-virtual {v4, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+  231:     invoke-virtual {v4}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+  236:     move-result-object v2
+  239:     :goto_0
+  240:     new-instance v3, Ljava/util/ArrayList;
+  244:     invoke-direct {v3}, Ljava/util/ArrayList;-><init>()V
+  249:     new-instance v4, Ljava/util/Random;
+  253:     invoke-direct {v4}, Ljava/util/Random;-><init>()V
+  258:     invoke-virtual {p1}, Lf25;->getData()Ljava/util/List;
+  263:     move-result-object p1
+  266:     invoke-interface {p1}, Ljava/util/List;->iterator()Ljava/util/Iterator;
+  271:     move-result-object p1
+  274:     :goto_1
+  275:     invoke-interface {p1}, Ljava/util/Iterator;->hasNext()Z
+  280:     move-result v5
+  283:     if-eqz v5, :cond_2
+  287:     invoke-interface {p1}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+  292:     move-result-object v5
+  295:     check-cast v5, Lbc;
+  299:     invoke-virtual {v5}, Lbc;->getPreview_file()Ljava/lang/String;
+  304:     move-result-object v6
+  307:     new-instance v7, Ljava/lang/StringBuilder;
+  311:     invoke-direct {v7}, Ljava/lang/StringBuilder;-><init>()V
+  316:     invoke-virtual {v7, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+  321:     invoke-virtual {v7, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+  326:     invoke-virtual {v7}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+  331:     move-result-object v6
+  334:     invoke-virtual {v5}, Lbc;->getOg_file()Ljava/lang/String;
+  339:     move-result-object v5
+  342:     new-instance v7, Ljava/lang/StringBuilder;
+  346:     invoke-direct {v7}, Ljava/lang/StringBuilder;-><init>()V
+  351:     invoke-virtual {v7, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+  356:     invoke-virtual {v7, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+  361:     invoke-virtual {v7}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+  366:     move-result-object v5
+  369:     invoke-virtual {v4}, Ljava/util/Random;->nextFloat()F
+  374:     move-result v7
+  377:     const/high16 v8, 0x3f000000    # 0.5f
+  381:     cmpg-float v7, v7, v8
+  385:     if-gez v7, :cond_1
+  389:     move v7, v0
+  392:     goto :goto_2
+  395:     :cond_1
+  396:     move v7, v1
+  399:     :goto_2
+  400:     new-instance v8, Lac;
+  404:     invoke-direct {v8, v6, v5, v7}, Lac;-><init>(Ljava/lang/String;Ljava/lang/String;Z)V
+  409:     invoke-virtual {v3, v8}, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+  414:     goto :goto_1
+  417:     :cond_2
+  418:     invoke-static {v3}, Ljava/util/Collections;->shuffle(Ljava/util/List;)V
+  423:     iget-object p1, p0, Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity;->mixedList:Ljava/util/ArrayList;
+  427:     invoke-virtual {p1, v3}, Ljava/util/ArrayList;->addAll(Ljava/util/Collection;)Z
+  432:     iget-object p1, p0, Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity;->mixedList:Ljava/util/ArrayList;
+  436:     invoke-virtual {p1}, Ljava/util/ArrayList;->size()I
+  441:     move-result p1
+  444:     const/4 v2, 0x6
+  447:     if-le p1, v2, :cond_3
+  451:     iget-object p1, p0, Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity;->mixedList:Ljava/util/ArrayList;
+  455:     const-string v3, "NATIVE_AD"
+  459:     invoke-virtual {p1, v2, v3}, Ljava/util/ArrayList;->add(ILjava/lang/Object;)V
+  464:     :cond_3
+  465:     new-instance p1, Ls8;
+  469:     iget-object v2, p0, Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity;->mixedList:Ljava/util/ArrayList;
+  473:     iget-object v3, p0, Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity;->B:Lx24;
   477:     const/4 v4, 0x0
-  478: 
-  479:     .line 179
   480:     if-eqz v3, :cond_5
-  481: 
-  482:     .line 180
-  483:     .line 181
   484:     invoke-virtual {v3}, Lx24;->getAdmobNativeCommonAdUnit()Ljava/lang/String;
-  485: 
-  486:     .line 182
-  487:     .line 183
-  488:     .line 184
   489:     move-result-object v3
-  490: 
-  491:     .line 185
   492:     new-instance v5, Lu8;
-  493: 
+  496:     invoke-direct {v5, p0, v1}, Lu8;-><init>(Ljava/lang/Object;I)V
+  501:     invoke-direct {p1, v2, v3, v5}, Ls8;-><init>(Ljava/util/List;Ljava/lang/String;Lon1;)V
+  506:     iget-object v1, p0, Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity;->y:La5;
+  510:     if-eqz v1, :cond_4
+  514:     iget-object v1, v1, La5;->recyclerAllImages:Landroidx/recyclerview/widget/RecyclerView;
+  518:     invoke-virtual {v1, v0}, Landroidx/recyclerview/widget/RecyclerView;->setHasFixedSize(Z)V
+  523:     const/16 v0, 0x14
+  527:     invoke-virtual {v1, v0}, Landroidx/recyclerview/widget/RecyclerView;->setItemViewCacheSize(I)V
+  532:     new-instance v0, Landroidx/recyclerview/widget/GridLayoutManager;
+  536:     invoke-direct {v0}, Landroidx/recyclerview/widget/GridLayoutManager;-><init>()V
+  541:     new-instance v2, Ly8;
+  545:     invoke-direct {v2, p0}, Ly8;-><init>(Lcom/appiolab/hyperlock_screen_and_aod/Activitys/AllImagesSeeActivity;)V
+  550:     iput-object v2, v0, Landroidx/recyclerview/widget/GridLayoutManager;->J:Lun;
+  554:     invoke-virtual {v1, v0}, Landroidx/recyclerview/widget/RecyclerView;->setLayoutManager(Landroidx/recyclerview/widget/d0;)V
+  559:     invoke-virtual {v1, p1}, Landroidx/recyclerview/widget/RecyclerView;->setAdapter(Landroidx/recyclerview/widget/y;)V
+  564:     return-void
+  567:     :cond_4
+  568:     const-string p0, "binding"
+  572:     invoke-static {p0}, Lk22;->e(Ljava/lang/String;)V
+  577:     throw v4
+  580:     :cond_5
+  581:     const-string p0, "sharedPrefHelper"
+  585:     invoke-static {p0}, Lk22;->e(Ljava/lang/String;)V
+  590:     throw v4
   591: .end method
-(method body truncated to match context)
 
 ## .class public final Lcom/appiolab/hyperlock_screen_and_aod/Activitys/IntroActivity; — smali/com/appiolab/hyperlock_screen_and_aod/Activitys/IntroActivity.smali
 .method public onCreate(Landroid/os/Bundle;)V
