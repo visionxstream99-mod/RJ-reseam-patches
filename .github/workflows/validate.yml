@@ -69,36 +69,61 @@ jobs:
           PY
           "$RESEAM_BIN" bundle list "$bundle" --trust "$pubkey"
 
-      - name: Fetch Pinterest 14.42.0 APKM target
+      - name: Fetch Pinterest 14.42.0 target APK set
         shell: bash
         run: |
           set -euo pipefail
-          target="$RUNNER_TEMP/pinterest-14.42.0.apkm"
-          curl -fL --retry 3 --retry-delay 2 -o "$target" "https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/download/apk/com.pinterest_14.42.0-14428010_1arch_2dpi_23lang_ea20959c6cbd20864956767ff91a0a32_apkmirror.com.zip"
-          python - "$target" <<'PY'
-          import sys, zipfile
-          path = sys.argv[1]
-          with zipfile.ZipFile(path) as archive:
-              names = set(archive.namelist())
-              if "base.apk" not in names or "info.json" not in names:
-                  raise SystemExit("Downloaded target does not have the expected APKM container layout")
-          print("Target APKM archive structure verified")
+          target_zip="$RUNNER_TEMP/pinterest-14.42.0.zip"
+          target_dir="$RUNNER_TEMP/pinterest-14.42.0"
+          curl -fL --retry 3 --retry-delay 2 -o "$target_zip" "https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/download/apk/com.pinterest_14.42.0-14428010_1arch_2dpi_23lang_ea20959c6cbd20864956767ff91a0a32_apkmirror.com.zip"
+          mkdir -p "$target_dir"
+          python - "$target_zip" "$target_dir" <<'PY'
+          import os, sys, zipfile
+          source, dest = sys.argv[1:3]
+          with zipfile.ZipFile(source) as archive:
+              names = archive.namelist()
+              apk_names = [name for name in names if name.lower().endswith('.apk') and not name.endswith('/')]
+              print('Release archive entries:')
+              for name in names[:60]:
+                  print('  ' + name)
+              bases = [name for name in apk_names if os.path.basename(name) == 'base.apk']
+              if len(bases) != 1:
+                  raise SystemExit(f'Expected one base.apk in release ZIP, found {len(bases)}; cannot safely dry-run this package')
+              for name in apk_names:
+                  destination = os.path.join(dest, os.path.basename(name))
+                  if os.path.exists(destination):
+                      raise SystemExit('Duplicate APK basename in source archive: ' + os.path.basename(name))
+                  with archive.open(name) as src, open(destination, 'wb') as out:
+                      while chunk := src.read(1024 * 1024):
+                          out.write(chunk)
           PY
-          sha256sum "$target"
-          echo "PINTEREST_TARGET=$target" >> "$GITHUB_ENV"
+          base="$target_dir/base.apk"
+          actual_base_sha="$(sha256sum "$base" | cut -d ' ' -f 1)"
+          expected_base_sha="88a4f5685a0aec4c8b51219b270a46c9b7baac589d25fa82e6ff26daf7478845"
+          echo "Pinterest base.apk SHA-256: $actual_base_sha"
+          test "$actual_base_sha" = "$expected_base_sha"
+          echo "PINTEREST_TARGET_DIR=$target_dir" >> "$GITHUB_ENV"
 
-      - name: Apply Pinterest patches to target and validate output
+      - name: Apply Pinterest patches to exact target and validate output
         shell: bash
         run: |
           set -euo pipefail
           bundle="build/reseam/rj-reseam-patches.reseam"
           pubkey="$(python -c 'import sys,zipfile; print(zipfile.ZipFile(sys.argv[1]).read("manifest.pubkey").hex())' "$bundle")"
+          base="$PINTEREST_TARGET_DIR/base.apk"
           output="$RUNNER_TEMP/patched-pinterest-14.42.0"
-          "$RESEAM_BIN" info "$PINTEREST_TARGET"
-          "$RESEAM_BIN" patch "$PINTEREST_TARGET" --bundle "$bundle" --trust "$pubkey" --output-dir "$output" --enable app.rj.pinterest.patches.removeAdvertisingIdPermission --enable app.rj.pinterest.patches.optOutGoogleAnalytics --enable app.rj.pinterest.patches.disablePrivacySandboxAdServices --enable app.rj.pinterest.patches.disableGoogleEngageReceiver
+          "$RESEAM_BIN" info "$base"
+          mapfile -t splits < <(find "$PINTEREST_TARGET_DIR" -maxdepth 1 -type f -name '*.apk' ! -name 'base.apk' | sort)
+          args=("$RESEAM_BIN" patch "$base" --bundle "$bundle" --trust "$pubkey" --output-dir "$output")
+          args+=(--enable app.rj.pinterest.patches.removeAdvertisingIdPermission)
+          args+=(--enable app.rj.pinterest.patches.optOutGoogleAnalytics)
+          args+=(--enable app.rj.pinterest.patches.disablePrivacySandboxAdServices)
+          args+=(--enable app.rj.pinterest.patches.disableGoogleEngageReceiver)
+          for split in "${splits[@]}"; do args+=(--split "$split"); done
+          "${args[@]}"
           test -s "$output/base.apk"
           "$RESEAM_BIN" info "$output/base.apk"
-          echo "Patched APK set created at $output"
+          echo "Applied four Pinterest patches to the inspected 14.42.0 base APK and created the split output set."
 
       - name: Preserve diagnostics when validation fails
         if: always()
