@@ -221,4 +221,24 @@ Once the user approves the patch:
 1. Copy patch files to `RJ-reseam-patches/apps/<app_name>/patch/src/main/kotlin/app/rj/<app_name>/patches/`.
 2. Update metadata in `patches.json` and `manifest.toml`.
 3. Rebuild `rj-reseam-patches.reseam`.
-4. Commit, tag (`git tag -f v0.1.2`), push (`git push origin main --force`), and publish release artifacts.
+4. Commit, tag (`git tag -f v0.1.3`), push (`git push origin main --force`), and publish release artifacts.
+
+---
+
+## ⚙️ Phase 6: GitHub Actions CI & Deployment Best Practices
+
+### 1. Linux Executable Permission Bit (`./gradlew Permission Denied / Exit Code 126`)
+When committing or staging repository changes on Windows, Git may save `gradlew` with file mode `100644` (non-executable). GitHub Actions Ubuntu runners will fail during `./gradlew bundle` with `Permission denied` (exit code `126`).
+* **Fix Command:** Run `git update-index --chmod=+x gradlew` before committing to ensure mode `100755`.
+
+### 2. Extension Functions in Kotlin (`@JvmStatic` Rule)
+In Reseam extension DEX files (`apps/<app>/extensions`), top-level functions in `@file:JvmName(...)` files must **never** use `@JvmStatic`.
+* **Reason:** `@JvmStatic` is only valid inside an `object` or `companion object`.
+* **Correct Syntax:** Use `@Export` on top-level functions directly.
+
+### 3. Workspace Manifest (`manifest.toml`)
+Reseam Gradle workspace plugin (`app.reseam.workspace` v0.34.0) requires `manifest.toml` at the repository root. Without it, task `relocateKotlin` fails with `Failed to query the value of extension 'reseamBundle' property 'name'`.
+
+### 4. Target App Evolution Solutions
+* **ADM 14.x:** ADM replaced legacy AdMob strings with **Appodeal Mediation SDK** (`com.appodeal.ads.Appodeal`). Target `show`, `canShow`, `isLoaded`, and `initialize` on `Appodeal`, plus `BaseAdView.loadAd()`.
+* **JioHotstar 26.10+:** Target `PlayerConfig.getEnableHdmiBroadcastListener()` (`false`), `CapabilitiesConfig.getEnableSendingHdcpNoDigitalOutputForNoHdmiConnected()` (`false`), `Oh.b.isDeviceBlacklisted()` (`false`), and `MyPageData.getIsSubscribed()` (`true`).
