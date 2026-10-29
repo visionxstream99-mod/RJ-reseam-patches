@@ -1,60 +1,70 @@
-# RJ Reseam Patches (v0.1.3)
-
-Custom [Reseam](https://reseam.app) patch bundle for **Advanced Download Manager (ADM)**, **AdGuard**, **Facebook**, **JioHotstar**, **HyperLock**, **Anixart**, **Pinterest**, and **GBoard**.
-
-Built with the latest **Reseam Engine v0.45.0** (Engine `0.34.0`) supporting Kotlin DSL transformations, `@Export` DEX extensions, and native Seccomp integrity bypass.
+<div align="center">
+  <img src="https://avatars.githubusercontent.com/u/256498752?v=4" width="112" height="112" alt="RJ profile logo" />
+  <h1>RJ Reseam Patches</h1>
+  <p><strong>Community Android patches, maintained by RJ.</strong></p>
+  <p>
+    <a href="https://reseam.app">Reseam</a> ·
+    <a href="https://github.com/visionxstream99-mod/RJ-reseam-patches/releases">Releases</a> ·
+    <a href="https://github.com/visionxstream99-mod/RJ-reseam-patches/blob/main/patches.json">Patch index</a> ·
+    <a href="https://awesome-reseam.vercel.app/">Awesome Reseam</a>
+  </p>
+</div>
 
 ---
 
-## 🚀 Quick Usage
+## About
+
+RJ Reseam Patches is a community patch bundle for supported Android apps. The repository publishes the signed **.reseam** bundle and its **patches.json** index; source and development work may be maintained separately.
+
+## Supported apps
+
+| App | Android package | Patch coverage |
+|---|---|---|
+| **Advanced Download Manager (ADM)** | **com.dv.adm** | Ad-removal patch |
+| **AdGuard** | **com.adguard.android** | Lifetime-license and setup patches |
+| **Facebook** | **com.facebook.katana** | Extension core, sponsored-post filtering, affiliate-link filtering, Audience Network controls |
+| **JioHotstar** | **in.startv.hotstar** | Premium UI, ads, playback codecs/HDR, mirroring, screenshots and integrity-related patches |
+| **Anixart** | Check the bundle index | Included in the project catalog |
+| **Pinterest** | Check the bundle index | Included in the project catalog |
+| **HyperLock** | Check the bundle index | Included in the project catalog |
+
+The available patches and compatibility can change between releases. Check the release notes and inspect the patch manager's compatibility information before applying a patch.
+
+## Install
+
+1. Open [Releases](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases).
+2. Download the latest **.reseam** bundle asset.
+3. Import it into a compatible Reseam manager, following that manager's trust and installation prompts.
+4. Select only patches compatible with your installed app version.
+
+**Important:** Patch availability does not guarantee compatibility with every app version or Android device. Keep a backup of important data and review what each patch changes before applying it.
+
+## Patch index
+
+The machine-readable index is [patches.json](./patches.json). It contains bundle metadata, release information, patch IDs, default states, dependencies, and compatibility declarations.
+
+## Build from source
+
+If you have the project source and its required build tools installed:
 
 ```bash
-# Apply all default patches using Reseam CLI
-reseam patch \
-  --trust d16834e29b664ab59f5cc8c0b2ce47dfe3620fe8debeb0ddf74d673a68136294 \
-  --bundle rj-reseam-patches \
-  --output-dir ./output_splits \
-  target_app.apk
-```
-
----
-
-## 📦 Supported Apps & Patch Index
-
-### 🔹 1. Facebook (`com.facebook.katana`)
-- **Facebook Extension Core** (`top.madkarma.patches.facebook.facebookExtensionPatch`): Initializes runtime context & logger.
-- **Hide sponsored posts** (`top.madkarma.patches.facebook.hideSponsoredPosts`): Removes sponsored feed edges and multi-ads.
-- **Hide affiliate product links** (`top.madkarma.patches.facebook.hideAffiliateLinks`): Strips shop CTAs and affiliate product overlays.
-- **Disable Audience Network** (`top.madkarma.patches.facebook.disableAudienceNetwork`): Neutralizes Audience Network manifest activities & runtime state setters.
-
-### 🔹 2. JioHotstar (`in.startv.hotstar`)
-- **Premium unlock** (`app.rj.hotstar.patches.premium.premiumUnlock`): Unlocks premium UI, MyPage subscription status, and download capabilities.
-- **Remove ads** (`app.rj.hotstar.patches.ads.removeAds`): Removes video pre-roll/mid-roll ads and banner promotions.
-- **Enable all codecs** (`app.rj.hotstar.patches.playback.enableAllCodecs`): Unlocks H265/HEVC, VP9, AV1, and 4K playback.
-- **Force HDR10** (`app.rj.hotstar.patches.playback.forceHdr10`): Forces HDR10 and HDR10+ rendering.
-- **Enable screen mirroring** (`app.rj.hotstar.patches.mirroring.enableScreenMirroring`): Bypasses HDMI/Display cast blocking.
-- **Enable screenshot** (`app.rj.hotstar.patches.screenshot.enableScreenshot`): Clears `FLAG_SECURE` to allow screenshots and screen recording.
-- **Signature bypass** (`app.rj.hotstar.patches.integrity.signatureBypass`): Bypasses signature & integrity verification.
-
-### 🔹 3. Advanced Download Manager (`com.dv.adm`)
-- **Remove ads** (`app.rj.adm.patches.removeAds`): Neutralizes Appodeal Mediation, AppLovin MAX, Pangle, and AdMob banner/interstitial ads in ADM 14.x.
-
-### 🔹 4. AdGuard (`com.adguard.android`)
-- **Unlock Lifetime premium** (`top.madkarma.patches.adguard.lifetime.unlockLifetime`): Enables Family Lifetime Premium license.
-- **Skip setup** (`top.madkarma.patches.adguard.setup.skipSetup`): Skips onboarding and pre-configures filter rules.
-
----
-
-## 🛠️ Building From Source
-
-```powershell
-# Compile all patch DEX modules & extension JARs
 ./gradlew build
 ```
 
+Build tasks and requirements may vary by source revision.
+
+## Releases
+
+See the [release history](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases) for downloadable bundles and version-specific notes. Use the matching release's assets rather than an unrelated or older bundle.
+
+## Credits and licensing
+
+- Built for the [Reseam](https://reseam.app) patch ecosystem.
+- Individual patch implementations may have their own upstream origins and licenses. Check the source and license files for the terms that apply to each component.
+- RJ Reseam Patches is a community project and is not an official Reseam product.
+
 ---
 
-## 📄 Release & Index Verification
-- **Release Index:** `patches.json`
-- **Signer Fingerprint:** `d16834e29b664ab59f5cc8c0b2ce47dfe3620fe8debeb0ddf74d673a68136294`
-- **License:** AGPL-3.0 / GPL-3.0
+<div align="center">
+  <sub>Maintained by <a href="https://github.com/visionxstream99-mod">RJ</a> · Community patches for Android</sub>
+</div>
