@@ -2,14 +2,18 @@ name: release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
+    paths:
+      - 'manifest.toml'
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (for example v0.1.0)"
+        description: "Release tag (for example v1.0.2)"
         required: true
-        default: "v0.1.0"
+        default: "v1.0.2"
         type: string
 
 permissions:
@@ -24,16 +28,37 @@ jobs:
       RELEASE_TOKEN: ${{ github.token }}
       RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
-      # Full history, so the release notes can list the commits since the previous tag.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Prepare tag for release notes
+      - name: Prepare tag for release
         shell: bash
         run: |
           set -euo pipefail
+
+          # Manual dispatch must run from a branch (normally main), not an old tag.
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" && "$GITHUB_REF_TYPE" != "branch" ]]; then
+            echo "Run this workflow from the main branch, not an existing tag." >&2
+            exit 1
+          fi
+
+          # A push to main that updates manifest.toml publishes the version declared there.
+          if [[ "$GITHUB_REF_TYPE" != "tag" && "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]]; then
+            version=$(sed -n 's/^version = "\([^"]*\)".*/\1/p' manifest.toml)
+            if [[ -z "$version" ]]; then
+              echo "Could not read bundle version from manifest.toml" >&2
+              exit 1
+            fi
+            RELEASE_TAG="v$version"
+            echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
+          fi
+
           if [[ "$GITHUB_REF_TYPE" != "tag" ]]; then
+            if git rev-parse -q --verify "refs/tags/$RELEASE_TAG" >/dev/null; then
+              echo "Tag $RELEASE_TAG already exists; refusing to overwrite it." >&2
+              exit 1
+            fi
             git tag "$RELEASE_TAG" "$GITHUB_SHA"
           fi
 
@@ -46,14 +71,15 @@ jobs:
 
       - name: Install the Reseam CLI and signing key
         run: |
+          set -euo pipefail
           mkdir -p engine
           version=$(sed -n 's/.*id("app.reseam.workspace") version "\(.*\)".*/\1/p' settings.gradle.kts)
-          curl -fsSL -o engine/reseam https://cdn.reseam.app/engine/v$version/reseam-linux-x64
+          curl -fsSL -o engine/reseam "https://cdn.reseam.app/engine/v$version/reseam-linux-x64"
           chmod +x engine/reseam
           echo "${{ secrets.BUNDLE_SIGNING_KEY_B64 }}" | base64 -d > bundle-signing.key
 
       - name: Build the bundle
-        run: ./gradlew bundle -PreleaseTag="$RELEASE_TAG" --no-daemon
+        run: bash ./gradlew bundle -PreleaseTag="$RELEASE_TAG" --no-daemon
 
       - name: Publish the release
         run: engine/reseam release patches build/reseam/*.reseam --tag "$RELEASE_TAG"
