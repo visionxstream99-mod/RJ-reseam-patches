@@ -1,5 +1,9 @@
 <div align="center">
 
+<a href="https://github.com/visionxstream99-mod" title="RJ's GitHub profile">
+  <img src="https://github.com/visionxstream99-mod.png?size=256" width="112" height="112" alt="RJ's GitHub profile picture">
+</a>
+
 # RJ Reseam Patches
 
 **Small changes. Your apps. Your choice.**
