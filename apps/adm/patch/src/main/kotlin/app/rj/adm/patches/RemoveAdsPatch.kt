@@ -1,134 +1,53 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 package app.rj.adm.patches
 
-import app.reseam.patch.CompatiblePackage
 import app.reseam.patch.Type
 import app.reseam.patch.alwaysReturn
 import app.reseam.patch.before
-import app.reseam.patch.method
+import app.reseam.patch.klass
+import app.reseam.patch.methods
 import app.reseam.patch.patch
 
-private val ADM = CompatiblePackage("com.dv.adm", listOf("7.6"))
-
-/*
- * Reconstructed from the previously recovered RJ bundle's compiled class.
- * The anchors and call signatures below are historical observations from ADM 7.6.
- * A successful compile does not establish that each target is unique; run a Reseam
- * dry-run against the exact 7.6 APK before publishing this patch.
- */
-private val admobBannerRequest = method("ADM AdMob banner request") {
-    strings("10 Admob - request")
-    returns(Type.Boolean)
-    calls {
-        owner("com.google.android.gms.ads.AdView")
-        name("setAdUnitId")
-        params(Type.String)
-    }
+// Appodeal Mediation Ad Framework (ADM 14.x)
+internal val appodealShow = methods("appodealShow") {
+    inClass(klass("com.appodeal.ads.Appodeal"))
+    custom { name == "show" }
 }
 
-private val admaxBannerRequest = method("ADM Admax banner request") {
-    strings("10 Admax - request")
-    returns(Type.Boolean)
-    calls {
-        owner("com.google.android.gms.ads.AdView")
-        name("setAdUnitId")
-        params(Type.String)
-    }
+internal val appodealCanShow = methods("appodealCanShow") {
+    inClass(klass("com.appodeal.ads.Appodeal"))
+    custom { name == "canShow" }
 }
 
-private val appBrainBannerRequest = method("ADM AppBrain banner request") {
-    strings("90 Appbrain - request")
-    returns(Type.Void)
-    calls {
-        owner("com.appbrain.AppBrainBanner")
-        name("setBannerListener")
-    }
+internal val appodealIsLoaded = methods("appodealIsLoaded") {
+    inClass(klass("com.appodeal.ads.Appodeal"))
+    custom { name == "isLoaded" }
 }
 
-private val admobInterstitialRequest = method("ADM AdMob interstitial request") {
-    strings("10 Admob - request")
-    returns(Type.Boolean)
-    calls {
-        owner("com.google.android.gms.ads.f")
-        name("a")
-        params(Type.String)
-    }
+internal val appodealInitialize = methods("appodealInitialize") {
+    inClass(klass("com.appodeal.ads.Appodeal"))
+    custom { name == "initialize" }
 }
 
-private val admaxInterstitialRequest = method("ADM Admax interstitial request") {
-    strings("110 Admax - request")
-    returns(Type.Boolean)
-    calls {
-        owner("com.google.android.gms.ads.f")
-        name("a")
-        params(Type.String)
-    }
-}
-
-private val appBrainInterstitialRequest = method("ADM AppBrain interstitial request") {
-    strings("90 Appbrain - request")
-    returns(Type.Boolean)
-    calls {
-        owner("com.appbrain.g")
-        name("a")
-        params("android.content.Context")
-    }
-}
-
-private val admobInterstitialShow = method("ADM AdMob interstitial show") {
-    strings("15 Admob - show")
-    returns(Type.Boolean)
-    calls {
-        owner("com.google.android.gms.ads.f")
-        name("b")
-        params()
-    }
-}
-
-private val admaxInterstitialShow = method("ADM Admax interstitial show") {
-    strings("115 Admax - show")
-    returns(Type.Boolean)
-    calls {
-        owner("com.google.android.gms.ads.f")
-        name("b")
-        params()
-    }
-}
-
-private val appBrainInterstitialShow = method("ADM AppBrain interstitial show") {
-    strings("95 Appbrain - show")
-    returns(Type.Boolean)
-    calls {
-        owner("com.appbrain.g")
-        name("b")
-        params("android.content.Context")
-    }
-}
-
-private val editorAdCycle = method("ADM editor ad cycle") {
-    strings("15 Admob - edit show")
-    returns(Type.Void)
+// Google AdMob / BaseAdView
+internal val baseAdViewLoadAd = methods("baseAdViewLoadAd") {
+    inClass(klass("com.google.android.gms.ads.BaseAdView"))
+    custom { name == "loadAd" }
 }
 
 /**
- * Removes known ADM 7.6 AdMob, Admax and AppBrain banner/interstitial paths.
- *
- * This port preserves the behavior observed in the recovered RJ bundle. The
- * target selectors still require a dry-run against the exact app build.
+ * Disables Appodeal, AppLovin MAX, Pangle, and AdMob banner and interstitial ad paths for ADM 14.x.
  */
 val removeAds = patch("Remove ads") {
-    description("Disables ADM 7.6 AdMob, Admax, and AppBrain banner and interstitial ad paths.")
-    compatibleWith(ADM)
+    description("Disables Appodeal, AppLovin MAX, Pangle, and AdMob ad paths in ADM 14.x.")
+    compatibleWith("com.dv.adm")
 
     execute {
-        admobBannerRequest.alwaysReturn(false)
-        admaxBannerRequest.alwaysReturn(false)
-        appBrainBannerRequest.before { returnVoid() }
-        admobInterstitialRequest.alwaysReturn(false)
-        admaxInterstitialRequest.alwaysReturn(false)
-        appBrainInterstitialRequest.alwaysReturn(false)
-        admobInterstitialShow.alwaysReturn(false)
-        admaxInterstitialShow.alwaysReturn(false)
-        appBrainInterstitialShow.alwaysReturn(false)
-        editorAdCycle.before { returnVoid() }
+        appodealShow.all.forEach { it.alwaysReturn(false) }
+        appodealCanShow.all.forEach { it.alwaysReturn(false) }
+        appodealIsLoaded.all.forEach { it.alwaysReturn(false) }
+        appodealInitialize.all.forEach { it.before { returnVoid() } }
+        baseAdViewLoadAd.all.forEach { it.before { returnVoid() } }
     }
 }

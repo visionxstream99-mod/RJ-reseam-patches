@@ -6,11 +6,8 @@ import app.reseam.patch.Type
 import app.reseam.patch.klass
 import app.reseam.patch.method
 
-internal val getSubscriptionStatus = method("getSubscriptionStatus") {
-    returns(Type.Object)
-    strings("SubscriptionStatus")
-}
-
-internal val isUserSubscribed = klass("com.hotstar.user.Subscription").method("isSubscribed") {
+internal val myPageDataIsSubscribed = method("getIsSubscribed") {
+    inClass(klass("com.hotstar.ui.model.pagedata.MyPageData"))
     returns(Type.Boolean)
+    custom { name == "getIsSubscribed" }
 }

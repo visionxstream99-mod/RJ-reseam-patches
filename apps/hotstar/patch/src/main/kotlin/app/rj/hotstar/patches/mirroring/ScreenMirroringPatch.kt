@@ -4,7 +4,7 @@
 
 package app.rj.hotstar.patches.mirroring
 
-import app.reseam.patch.before
+import app.reseam.patch.alwaysReturn
 import app.reseam.patch.patch
 
 val enableScreenMirroring = patch("Enable screen mirroring") {
@@ -12,8 +12,7 @@ val enableScreenMirroring = patch("Enable screen mirroring") {
     compatibleWith("in.startv.hotstar")
 
     execute {
-        screenMirroringInit.before {
-            returnVoid()
-        }
+        enableHdmiBroadcastListener.alwaysReturn(false)
+        enableSendingHdcpNoDigitalOutput.alwaysReturn(false)
     }
 }

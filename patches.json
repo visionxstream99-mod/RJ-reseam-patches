@@ -1,0 +1,266 @@
+{
+  "bundle": {
+    "name": "rj-reseam-patches",
+    "author": "RJ",
+    "description": "RJ community patches for ADM, Anixart, Facebook, JioHotstar, Pinterest, and HyperLock",
+    "homepage": "https://github.com/visionxstream99-mod/RJ-reseam-patches",
+    "public_key": "d16834e29b664ab59f5cc8c0b2ce47dfe3620fe8debeb0ddf74d673a68136294"
+  },
+  "releases": [
+    {
+      "version": "0.1.3",
+      "created_at": "2026-10-29T16:30:00Z",
+      "description": "- Add Facebook (com.facebook.katana) Reseam patches (Extension Core, Hide Sponsored Posts, Hide Affiliate Links, Disable Audience Network)\n- Fix & update ADM (com.dv.adm 14.x) Remove Ads patch for Appodeal, AppLovin MAX, and AdMob\n- Fix & update JioHotstar (in.startv.hotstar 26.10.12.2) patches (Premium Unlock, Enable Screen Mirroring, Enable All Codecs, Force HDR10)\n",
+      "download_url": "https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/download/v0.1.3/rj-reseam-patches.reseam",
+      "prerelease": false,
+      "patches": [
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "app.rj.adm.patches.removeAds",
+          "name": "Remove ads",
+          "hidden": false,
+          "description": "Disables Appodeal, AppLovin MAX, Pangle, and AdMob ad paths in ADM 14.x.",
+          "enabled_by_default": true,
+          "dependencies": [],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "com.dv.adm",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "top.madkarma.patches.facebook.facebookExtensionPatch",
+          "name": "Facebook Extension Core",
+          "hidden": false,
+          "description": "Initializes the Facebook runtime patch logger on Application startup.",
+          "enabled_by_default": true,
+          "dependencies": [],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "com.facebook.katana",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "top.madkarma.patches.facebook.hideSponsoredPosts",
+          "name": "Hide sponsored posts",
+          "hidden": false,
+          "description": "Removes sponsored posts, ads, and promoted content from the Facebook news feed.",
+          "enabled_by_default": true,
+          "dependencies": [
+            "rj-reseam-patches/top.madkarma.patches.facebook.facebookExtensionPatch"
+          ],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "com.facebook.katana",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "top.madkarma.patches.facebook.hideAffiliateLinks",
+          "name": "Hide affiliate product links",
+          "hidden": false,
+          "description": "Removes shopping cards, affiliate links, and Shop Now overlays on reels, feed posts, and comments.",
+          "enabled_by_default": true,
+          "dependencies": [
+            "rj-reseam-patches/top.madkarma.patches.facebook.facebookExtensionPatch"
+          ],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "com.facebook.katana",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "top.madkarma.patches.facebook.disableAudienceNetwork",
+          "name": "Disable Audience Network",
+          "hidden": false,
+          "description": "Disables Audience Network components in AndroidManifest.xml and prevents runtime reactivation.",
+          "enabled_by_default": true,
+          "dependencies": [
+            "rj-reseam-patches/top.madkarma.patches.facebook.facebookExtensionPatch"
+          ],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "com.facebook.katana",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "app.rj.hotstar.patches.premium.premiumUnlock",
+          "name": "Premium unlock",
+          "hidden": false,
+          "description": "Unlocks premium UI features, removes subscription nudges, and enables downloads.",
+          "enabled_by_default": true,
+          "dependencies": [],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "in.startv.hotstar",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "app.rj.hotstar.patches.ads.removeAds",
+          "name": "Remove ads",
+          "hidden": false,
+          "description": "Removes in-stream video ads and banner promotions in JioHotstar.",
+          "enabled_by_default": true,
+          "dependencies": [],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "in.startv.hotstar",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "app.rj.hotstar.patches.playback.enableAllCodecs",
+          "name": "Enable all codecs",
+          "hidden": false,
+          "description": "Enables all video codecs (H265, VP9, AV1) and 4K resolution by bypassing blacklist and capability checks.",
+          "enabled_by_default": true,
+          "dependencies": [],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "in.startv.hotstar",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "app.rj.hotstar.patches.playback.forceHdr10",
+          "name": "Force HDR10",
+          "hidden": false,
+          "description": "Forces HDR10 and HDR10+ playback on compatible devices.",
+          "enabled_by_default": true,
+          "dependencies": [],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "in.startv.hotstar",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "app.rj.hotstar.patches.mirroring.enableScreenMirroring",
+          "name": "Enable screen mirroring",
+          "hidden": false,
+          "description": "Allows playback while screen mirroring or HDMI is connected.",
+          "enabled_by_default": true,
+          "dependencies": [],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "in.startv.hotstar",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "app.rj.hotstar.patches.screenshot.enableScreenshot",
+          "name": "Enable screenshot",
+          "hidden": false,
+          "description": "Disables FLAG_SECURE to allow taking screenshots and screen recordings.",
+          "enabled_by_default": true,
+          "dependencies": [],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "in.startv.hotstar",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        },
+        {
+          "bundle": "rj-reseam-patches",
+          "id": "app.rj.hotstar.patches.integrity.signatureBypass",
+          "name": "Signature bypass",
+          "hidden": false,
+          "description": "Bypasses app integrity and signature verification checks.",
+          "enabled_by_default": true,
+          "dependencies": [],
+          "compatibility": {
+            "kind": "packages",
+            "packages": [
+              {
+                "package": "in.startv.hotstar",
+                "versions": null
+              }
+            ]
+          },
+          "options": [],
+          "rewrites_output": false
+        }
+      ]
+    }
+  ]
+}

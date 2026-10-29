@@ -12,7 +12,6 @@ val enableAllCodecs = patch("Enable all codecs") {
     compatibleWith("in.startv.hotstar")
 
     execute {
-        isBlacklistedCodec.all.forEach { it.alwaysReturn(false) }
-        isDeviceCodecCapable.alwaysReturn(true)
+        isDeviceBlacklisted.all.forEach { it.alwaysReturn(false) }
     }
 }

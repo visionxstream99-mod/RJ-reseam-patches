@@ -12,6 +12,6 @@ val forceHdr10 = patch("Force HDR10") {
     compatibleWith("in.startv.hotstar")
 
     execute {
-        isBlacklistedHdr.all.forEach { it.alwaysReturn(false) }
+        isDeviceBlacklisted.all.forEach { it.alwaysReturn(false) }
     }
 }

@@ -5,7 +5,6 @@
 package app.rj.hotstar.patches.premium
 
 import app.reseam.patch.alwaysReturn
-import app.reseam.patch.before
 import app.reseam.patch.patch
 
 val premiumUnlock = patch("Premium unlock") {
@@ -13,6 +12,6 @@ val premiumUnlock = patch("Premium unlock") {
     compatibleWith("in.startv.hotstar")
 
     execute {
-        isUserSubscribed.alwaysReturn(true)
+        myPageDataIsSubscribed.alwaysReturn(true)
     }
 }
