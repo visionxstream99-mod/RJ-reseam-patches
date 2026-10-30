@@ -12,8 +12,8 @@ A collection of community-made patches for [Reseam](https://reseam.app), maintai
 [![Stars](https://img.shields.io/github/stars/visionxstream99-mod/RJ-reseam-patches?style=for-the-badge&label=Stars&color=E3B341&logo=github&logoColor=white)](https://github.com/visionxstream99-mod/RJ-reseam-patches/stargazers)
 [![Build](https://img.shields.io/github/actions/workflow/status/visionxstream99-mod/RJ-reseam-patches/validate.yml?branch=main&style=for-the-badge&label=Build)](https://github.com/visionxstream99-mod/RJ-reseam-patches/actions/workflows/validate.yml)
 
-<a href="https://reseam.app/add/?url=https%3A%2F%2Fgithub.com%2Fvisionxstream99-mod%2FRJ-reseam-patches" title="Add RJ Reseam Patches to Reseam">
-  <img alt="Add to Reseam" src="https://img.shields.io/badge/Reseam-Add%20this%20source-00A8FF?style=for-the-badge" height="32">
+<a href="https://raw.githubusercontent.com/visionxstream99-mod/RJ-reseam-patches/main/patches.json" title="Open the RJ patch source index to add in Reseam Manager">
+  <img alt="Add to Reseam" src="https://img.shields.io/badge/ADD%20TO-RESEAM-00A8FF?style=for-the-badge&logo=android&logoColor=white" height="38">
 </a>
 <a href="https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest">
   <img alt="Latest release" src="https://img.shields.io/badge/Download-Latest%20release-20252d?style=for-the-badge&logo=github&logoColor=white" height="32">
@@ -30,8 +30,8 @@ A collection of community-made patches for [Reseam](https://reseam.app), maintai
 <table>
 <tr>
 <td align="center" width="25%"><a href="#advanced-download-manager"><img src="https://play-lh.googleusercontent.com/E_HmG2bArUd4Ke1sVW7uUmFicY0UENJcVBAVqnHp_SLfF7qCuv_n_klf-Jl37KlWbE39J8Svc6lx4vUENt4ayBw%3Dw240-h480" width="48" height="48" alt="Advanced Download Manager icon"><br>Advanced Download Manager</a><br><sub>1 patch</sub></td>
-<td align="center" width="25%"><a href="#anixart"><img src="https://play-lh.googleusercontent.com/OYzGx4gMk1U5pY1HljhjwXRyLmQwfeZoAc_3HANsAnCsXYjGQ6vHwrQx8MVo0HL3hXminBtFCUV38KrRwJTLWBg%3Dw240-h480" width="48" height="48" alt="Anixart brand icon"><br>Anixart</a><br><sub>1 patch</sub></td>
-<td align="center" width="25%"><a href="#facebook"><img src="https://play-lh.googleusercontent.com/KCMTYuiTrKom4Vyf0G4foetVOwhKWzNbHWumV73IXexAIy5TTgZipL52WTt8ICL-oIo%3Dw240-h480" width="48" height="48" alt="Facebook icon"><br>Facebook</a><br><sub>4 patches</sub></td>
+<td align="center" width="25%"><a href="#anixart"><img src="https://play-lh.googleusercontent.com/B4aa6Ks2BtmXBKLLpvm8ipcZ4UvSHyykaDVG0flDWmyMrBYL-Uo2qO0sM_rKTSVzCLBd1_wI6nroIA6CJnkP%3Dw240-h480" width="48" height="48" alt="Anixart Lite Google Play icon"><br>Anixart</a><br><sub>1 patch</sub></td>
+<td align="center" width="25%"><a href="#facebook"><img src="https://play-lh.googleusercontent.com/12KEJDhgk6oyE1VgmfCuFzFrQripZ_endElbvEhU1rZawQgV3RI-v3II8fDslI1sdC_WKBkmtxS3jxuIihk33Q%3Dw240-h480" width="48" height="48" alt="Facebook icon"><br>Facebook</a><br><sub>4 patches</sub></td>
 <td align="center" width="25%"><a href="#jiohotstar"><img src="https://play-lh.googleusercontent.com/02xiO0ptbXjD8NR3sbS2StP1P9aytDN56dDR15zqM_i66Vwq5W_hD-98CoFxvRVoUS4uV_xMSv-iQh3nQFeDeQ%3Dw240-h480" width="48" height="48" alt="JioHotstar icon"><br>JioHotstar</a><br><sub>7 patches</sub></td>
 </tr>
 <tr>
@@ -42,7 +42,7 @@ A collection of community-made patches for [Reseam](https://reseam.app), maintai
 </tr>
 </table>
 
-<sub>App icons are sourced from Google Play image assets. Anixart's image is shown as a brand identifier only: the source targets package `com.swiftsoft.anixartd`, not the separate Lite package.</sub>
+<sub>App icons below use the image URLs opened directly from their Google Play listings. Anixart uses the Google Play icon for package `com.swiftsoft.anixartd`.</sub>
 
 The app grid counts source patch declarations. The latest published **v0.1.3** bundle contains **12 patches for ADM, Facebook and JioHotstar**. Anixart, HyperLock and Pinterest are present in the repository source tree but are **not included in that release manifest**.
 
@@ -58,7 +58,7 @@ The app grid counts source patch declarations. The latest published **v0.1.3** b
 |---|---|
 | Remove ads | Disables supported Appodeal, AppLovin MAX, Pangle and AdMob ad paths in ADM 14.x. |
 
-### <img src="https://play-lh.googleusercontent.com/OYzGx4gMk1U5pY1HljhjwXRyLmQwfeZoAc_3HANsAnCsXYjGQ6vHwrQx8MVo0HL3hXminBtFCUV38KrRwJTLWBg%3Dw240-h480" height="30" align="absmiddle" alt="Anixart icon"> Anixart
+### <img src="https://play-lh.googleusercontent.com/B4aa6Ks2BtmXBKLLpvm8ipcZ4UvSHyykaDVG0flDWmyMrBYL-Uo2qO0sM_rKTSVzCLBd1_wI6nroIA6CJnkP%3Dw240-h480" height="30" align="absmiddle" alt="Anixart icon"> Anixart
 
 **Package:** `com.swiftsoft.anixartd`  
 **Target:** Anixart 10.5  
@@ -68,7 +68,7 @@ The app grid counts source patch declarations. The latest published **v0.1.3** b
 |---|---|
 | Remove ads | Optional controls for the banner ad strip, Yandex interstitial ads and the Kodik pre-roll/information prompt. Each option can be enabled independently. |
 
-### <img src="https://play-lh.googleusercontent.com/KCMTYuiTrKom4Vyf0G4foetVOwhKWzNbHWumV73IXexAIy5TTgZipL52WTt8ICL-oIo%3Dw240-h480" height="30" align="absmiddle" alt="Facebook icon"> Facebook
+### <img src="https://play-lh.googleusercontent.com/12KEJDhgk6oyE1VgmfCuFzFrQripZ_endElbvEhU1rZawQgV3RI-v3II8fDslI1sdC_WKBkmtxS3jxuIihk33Q%3Dw240-h480" height="30" align="absmiddle" alt="Facebook icon"> Facebook
 
 **Package:** `com.facebook.katana`  
 **Target:** Package-based compatibility; no version pin in the release metadata  
@@ -129,7 +129,7 @@ These Pinterest controls are limited to the listed manifest changes; they do not
 ## Installing
 
 1. Install [Reseam Manager](https://reseam.app).
-2. Select **[Add RJ Reseam Patches](https://reseam.app/add/?url=https%3A%2F%2Fgithub.com%2Fvisionxstream99-mod%2FRJ-reseam-patches)**.
+2. Select **[Add RJ Reseam Patches](https://raw.githubusercontent.com/visionxstream99-mod/RJ-reseam-patches/main/patches.json)**.
 3. Browse the patches available in the published bundle and choose one compatible with your app version.
 4. Review the patch description and options before applying it.
 
