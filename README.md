@@ -23,7 +23,7 @@ A collection of community-made patches for [Reseam](https://reseam.app), maintai
 
 ---
 
-## <img src="https://raw.githubusercontent.com/hxreborn/morphe-patches/main/.github/assets/icons/patches.png" height="38" align="absmiddle" alt=""> Patches list
+## 🧩 Patches list
 
 > **[v0.1.3](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.3)** &nbsp; • &nbsp; `main` &nbsp; • &nbsp; **20 source patches** across **6 apps**
 
