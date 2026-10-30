@@ -1,117 +1,166 @@
 <div align="center">
 
-<a href="https://github.com/visionxstream99-mod"><img src="https://avatars.githubusercontent.com/u/256498752?v=4" width="112" height="112" alt="RJ profile logo" /></a>
+<a href="https://github.com/visionxstream99-mod"><img src="https://avatars.githubusercontent.com/u/256498752?v=4" width="112" height="112" alt="RJ profile logo"></a>
 
 # RJ Reseam Patches
 
-**Small changes. Your apps. Your choice.**
+**Android patches. Your apps. Your way.**
 
-A curated collection of Android patches for [Reseam](https://reseam.app), maintained by **RJ**.
+A collection of community-made patches for [Reseam](https://reseam.app), maintained by **RJ**.
 
-<a href="https://reseam.app/add/?url=https%3A%2F%2Fgithub.com%2Fvisionxstream99-mod%2FRJ-reseam-patches"><img src="https://img.shields.io/badge/Add%20to-Reseam-20252d?style=for-the-badge&logo=android&logoColor=white" alt="Add to Reseam" /></a>
-<a href="https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest"><img src="https://img.shields.io/badge/Download-Latest%20Release-20252d?style=for-the-badge&logo=github&logoColor=white" alt="Latest release" /></a>
+[![Downloads](https://img.shields.io/github/downloads/visionxstream99-mod/RJ-reseam-patches/total?style=for-the-badge&label=Downloads&color=2F81F7&logo=github&logoColor=white)](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases)
+[![Stars](https://img.shields.io/github/stars/visionxstream99-mod/RJ-reseam-patches?style=for-the-badge&label=Stars&color=E3B341&logo=github&logoColor=white)](https://github.com/visionxstream99-mod/RJ-reseam-patches/stargazers)
+[![Build](https://img.shields.io/github/actions/workflow/status/visionxstream99-mod/RJ-reseam-patches/validate.yml?branch=main&style=for-the-badge&label=Build)](https://github.com/visionxstream99-mod/RJ-reseam-patches/actions/workflows/validate.yml)
 
-[![Latest release](https://img.shields.io/github/v/release/visionxstream99-mod/RJ-reseam-patches?style=flat-square&label=release)](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest)
-[![Build validation](https://img.shields.io/github/actions/workflow/status/visionxstream99-mod/RJ-reseam-patches/validate.yml?branch=main&style=flat-square&label=build)](https://github.com/visionxstream99-mod/RJ-reseam-patches/actions/workflows/validate.yml)
-[![License](https://img.shields.io/badge/license-AGPL--3.0--or--later-555?style=flat-square)](LICENSE)
+<a href="https://reseam.app/add/?url=https%3A%2F%2Fgithub.com%2Fvisionxstream99-mod%2FRJ-reseam-patches" title="Add RJ Reseam Patches to Reseam">
+  <img alt="Add to Reseam" src="https://img.shields.io/badge/Reseam-Add%20this%20source-00A8FF?style=for-the-badge" height="32">
+</a>
+<a href="https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest">
+  <img alt="Latest release" src="https://img.shields.io/badge/Download-Latest%20release-20252d?style=for-the-badge&logo=github&logoColor=white" height="32">
+</a>
 
 </div>
 
 ---
 
-## Apps & patches
+## <img src="https://raw.githubusercontent.com/hxreborn/morphe-patches/main/.github/assets/icons/patches.png" height="38" align="absmiddle" alt=""> Patches list
 
-Each app is shown once, with its patches grouped below it. App artwork links to the corresponding Google Play listing where one is available.
+> **[v0.1.3](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.3)** &nbsp; • &nbsp; `main` &nbsp; • &nbsp; **20 source patches** across **6 apps**
 
 <table>
 <tr>
-<td width="100" align="center" valign="top">
-<a href="https://play.google.com/store/apps/details?id=com.dv.adm"><img src="https://img.utdstc.com/icon/965/fa8/965fa8da7fc5018960cb7cd0ef78fd8ff88eff6ad41b661cb352f34650a95644:600" width="76" height="76" alt="Advanced Download Manager icon" /></a>
-</td>
-<td valign="top">
-
-### [Advanced Download Manager](https://play.google.com/store/apps/details?id=com.dv.adm)
-<sub><code>com.dv.adm</code></sub>
-
-- **Remove ads** — Disables Appodeal, AppLovin MAX, Pangle, and AdMob ad paths in ADM 14.x.
-
-</td>
+<td align="center" width="25%"><a href="#advanced-download-manager"><img src="https://play-lh.googleusercontent.com/E_HmG2bArUd4Ke1sVW7uUmFicY0UENJcVBAVqnHp_SLfF7qCuv_n_klf-Jl37KlWbE39J8Svc6lx4vUENt4ayBw%3Dw240-h480" width="48" height="48" alt="Advanced Download Manager icon"><br>Advanced Download Manager</a><br><sub>1 patch</sub></td>
+<td align="center" width="25%"><a href="#anixart"><img src="https://play-lh.googleusercontent.com/OYzGx4gMk1U5pY1HljhjwXRyLmQwfeZoAc_3HANsAnCsXYjGQ6vHwrQx8MVo0HL3hXminBtFCUV38KrRwJTLWBg%3Dw240-h480" width="48" height="48" alt="Anixart brand icon"><br>Anixart</a><br><sub>1 patch</sub></td>
+<td align="center" width="25%"><a href="#facebook"><img src="https://play-lh.googleusercontent.com/KCMTYuiTrKom4Vyf0G4foetVOwhKWzNbHWumV73IXexAIy5TTgZipL52WTt8ICL-oIo%3Dw240-h480" width="48" height="48" alt="Facebook icon"><br>Facebook</a><br><sub>4 patches</sub></td>
+<td align="center" width="25%"><a href="#jiohotstar"><img src="https://play-lh.googleusercontent.com/02xiO0ptbXjD8NR3sbS2StP1P9aytDN56dDR15zqM_i66Vwq5W_hD-98CoFxvRVoUS4uV_xMSv-iQh3nQFeDeQ%3Dw240-h480" width="48" height="48" alt="JioHotstar icon"><br>JioHotstar</a><br><sub>7 patches</sub></td>
 </tr>
 <tr>
-<td width="100" align="center" valign="top">
-<a href="https://play.google.com/store/apps/details?id=com.facebook.katana"><img src="https://images.tenorshare.com/topics/change-location/facebookmarketplace-3.jpg?h=500&w=635" width="76" height="76" alt="Facebook app icon" /></a>
-</td>
-<td valign="top">
-
-### [Facebook](https://play.google.com/store/apps/details?id=com.facebook.katana)
-<sub><code>com.facebook.katana</code></sub>
-
-- **Facebook Extension Core** — Initializes the runtime extension.
-- **Hide sponsored posts** — Filters sponsored and promoted feed content.
-- **Hide affiliate product links** — Removes shopping cards and affiliate overlays.
-- **Disable Audience Network** — Disables Audience Network components.
-
-</td>
-</tr>
-<tr>
-<td width="100" align="center" valign="top">
-<a href="https://play.google.com/store/apps/details?id=in.startv.hotstar"><img src="https://bestmediainfo.com/mediainfo/mediainfo-digital/jiohotstar-crosses-1-billion-downloads-emerges-as-indias-closest-challenger-to-netflix-10646943" width="76" height="76" alt="JioHotstar on Google Play" /></a>
-</td>
-<td valign="top">
-
-### [JioHotstar](https://play.google.com/store/apps/details?id=in.startv.hotstar)
-<sub><code>in.startv.hotstar</code></sub>
-
-- **Premium unlock** — Changes premium UI and subscription-state checks.
-- **Remove ads** — Removes supported in-stream ad and banner-promotion paths.
-- **Enable all codecs** — Enables additional playback codec and capability paths.
-- **Force HDR10** — Forces HDR10 playback selection.
-- **Enable screen mirroring** — Allows playback during supported mirroring / HDMI use.
-- **Enable screenshot** — Removes the app's secure-window restriction.
-- **Signature bypass** — Alters supported app integrity checks.
-
-</td>
+<td align="center" width="25%"><a href="#hyperlock-screen--aod"><img src="https://play-lh.googleusercontent.com/DymUF-QzzyhEQfDZzpZCxtG92GzlaFt8o59IyU5y4vtuQOunNxqJdUypMokUo8UESo8Oidtnbd4bnuNBxrQDeQ%3Dw240-h480" width="48" height="48" alt="HyperLock Screen and AOD icon"><br>HyperLock Screen &amp; AOD</a><br><sub>3 patches</sub></td>
+<td align="center" width="25%"><a href="#pinterest"><img src="https://play-lh.googleusercontent.com/VExMwhu9Fe5kz72YnPWP6mHrNA5WfgZ-PJMnBnQmXFpLncTAOaaHtK4b8w7b2xxGxtqycDatYslVyNSLucl9QA%3Dw240-h480" width="48" height="48" alt="Pinterest icon"><br>Pinterest</a><br><sub>4 patches</sub></td>
+<td align="center" width="25%"></td>
+<td align="center" width="25%"></td>
 </tr>
 </table>
 
-<sub>Other app work in the repository: Anixart, Pinterest, and HyperLock. Their source and notes remain in their respective app folders; they are not listed as part of the current v0.1.3 release manifest. Gboard is intentionally not included.</sub>
+<sub>App icons are sourced from Google Play image assets. Anixart's image is shown as a brand identifier only: the source targets package `com.swiftsoft.anixartd`, not the separate Lite package.</sub>
 
-## Install
+The app grid counts source patch declarations. The latest published **v0.1.3** bundle contains **12 patches for ADM, Facebook and JioHotstar**. Anixart, HyperLock and Pinterest are present in the repository source tree but are **not included in that release manifest**.
+
+## Full list
+
+### <img src="https://play-lh.googleusercontent.com/E_HmG2bArUd4Ke1sVW7uUmFicY0UENJcVBAVqnHp_SLfF7qCuv_n_klf-Jl37KlWbE39J8Svc6lx4vUENt4ayBw%3Dw240-h480" height="30" align="absmiddle" alt="ADM icon"> Advanced Download Manager
+
+**Package:** `com.dv.adm`  
+**Target:** ADM 14.x  
+**Status:** Included in [v0.1.3](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.3)
+
+| Patch | Description |
+|---|---|
+| Remove ads | Disables supported Appodeal, AppLovin MAX, Pangle and AdMob ad paths in ADM 14.x. |
+
+### <img src="https://play-lh.googleusercontent.com/OYzGx4gMk1U5pY1HljhjwXRyLmQwfeZoAc_3HANsAnCsXYjGQ6vHwrQx8MVo0HL3hXminBtFCUV38KrRwJTLWBg%3Dw240-h480" height="30" align="absmiddle" alt="Anixart icon"> Anixart
+
+**Package:** `com.swiftsoft.anixartd`  
+**Target:** Anixart 10.5  
+**Status:** Source only — not in v0.1.3
+
+| Patch | Description |
+|---|---|
+| Remove ads | Optional controls for the banner ad strip, Yandex interstitial ads and the Kodik pre-roll/information prompt. Each option can be enabled independently. |
+
+### <img src="https://play-lh.googleusercontent.com/KCMTYuiTrKom4Vyf0G4foetVOwhKWzNbHWumV73IXexAIy5TTgZipL52WTt8ICL-oIo%3Dw240-h480" height="30" align="absmiddle" alt="Facebook icon"> Facebook
+
+**Package:** `com.facebook.katana`  
+**Target:** Package-based compatibility; no version pin in the release metadata  
+**Status:** Included in [v0.1.3](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.3)
+
+| Patch | Description |
+|---|---|
+| Facebook Extension Core | Initializes the runtime extension used by the Facebook patches. |
+| Hide sponsored posts | Filters sponsored and promoted feed content. |
+| Hide affiliate product links | Removes shopping cards and affiliate product overlays. |
+| Disable Audience Network | Disables declared Audience Network components and prevents supported runtime reactivation. |
+
+### <img src="https://play-lh.googleusercontent.com/02xiO0ptbXjD8NR3sbS2StP1P9aytDN56dDR15zqM_i66Vwq5W_hD-98CoFxvRVoUS4uV_xMSv-iQh3nQFeDeQ%3Dw240-h480" height="30" align="absmiddle" alt="JioHotstar icon"> JioHotstar
+
+**Package:** `in.startv.hotstar`  
+**Target:** 26.10.12.2  
+**Status:** Included in [v0.1.3](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.3)
+
+| Patch | Description |
+|---|---|
+| Premium unlock | Changes supported premium UI and subscription-state checks. |
+| Remove ads | Removes supported in-stream video ad and banner-promotion paths. |
+| Enable all codecs | Enables additional codec and playback-capability paths, including H.265/HEVC, VP9 and AV1. |
+| Force HDR10 | Selects HDR10/HDR10+ playback on compatible devices. |
+| Enable screen mirroring | Allows playback while supported screen-mirroring or HDMI connections are active. |
+| Enable screenshot | Removes the app's secure-window restriction. |
+| Signature bypass | Alters supported app signature and integrity checks. |
+
+### <img src="https://play-lh.googleusercontent.com/DymUF-QzzyhEQfDZzpZCxtG92GzlaFt8o59IyU5y4vtuQOunNxqJdUypMokUo8UESo8Oidtnbd4bnuNBxrQDeQ%3Dw240-h480" height="30" align="absmiddle" alt="HyperLock icon"> HyperLock Screen &amp; AOD
+
+**Package:** `com.appiolab.hyperlockscreenos`  
+**Target:** HyperLock 0.1.2  
+**Status:** Source only — not in v0.1.3
+
+| Patch | Description |
+|---|---|
+| Remove ads | Suppresses supported banner, native and interstitial ad entry points. |
+| Unlock Premium | Changes the app's local premium-state check. |
+| Bypass License Check | Changes the app's local license and installer checks. |
+
+### <img src="https://play-lh.googleusercontent.com/VExMwhu9Fe5kz72YnPWP6mHrNA5WfgZ-PJMnBnQmXFpLncTAOaaHtK4b8w7b2xxGxtqycDatYslVyNSLucl9QA%3Dw240-h480" height="30" align="absmiddle" alt="Pinterest icon"> Pinterest
+
+**Package:** `com.pinterest`  
+**Target:** Pinterest 14.42.0 (version code 14428010)  
+**Status:** Source only — not in v0.1.3
+
+| Patch | Description |
+|---|---|
+| Remove Advertising ID permission | Removes the Google Advertising ID permission from the manifest. |
+| Opt out of Google Analytics | Sets four existing Google Analytics default-consent flags to false. |
+| Disable Privacy Sandbox Ad Services | Removes Pinterest's Android Ad Services manifest property. |
+| Disable Google Engage receiver | Disables the Google Engage recommendation receiver. |
+
+These Pinterest controls are limited to the listed manifest changes; they do not claim to disable every tracker or every advertisement.
+
+---
+
+## Installing
 
 1. Install [Reseam Manager](https://reseam.app).
-2. Select **Add to Reseam** above, or add this source manually:
-   `https://github.com/visionxstream99-mod/RJ-reseam-patches`
-3. Find your app, review the patch description and options, then apply the patch.
-4. Check the app version and compatibility notes before patching.
+2. Select **[Add RJ Reseam Patches](https://reseam.app/add/?url=https%3A%2F%2Fgithub.com%2Fvisionxstream99-mod%2FRJ-reseam-patches)**.
+3. Browse the patches available in the published bundle and choose one compatible with your app version.
+4. Review the patch description and options before applying it.
 
-You can also download the signed `.reseam` bundle and `patches.json` from the [latest release](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest).
+You can also download the signed `.reseam` bundle and `patches.json` from [GitHub Releases](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases).
 
-## Compatibility & testing
+## Building
 
-A successful build confirms that the bundle compiles. It does **not** prove that every patch applies to every app version or works correctly at runtime. Compatibility can change when an app updates.
+You need JDK 17, the Android SDK and the Reseam workspace plugin configured in `settings.gradle.kts`.
 
-For failures, open an [issue](https://github.com/visionxstream99-mod/RJ-reseam-patches/issues) and include the app version, package name, patch name, Android version, Reseam version, and relevant logs. Remove personal information before posting.
+```bash
+./gradlew bundle --no-daemon
+```
 
-## Repository
+The bundle is generated under `build/reseam/`. The [validation workflow](.github/workflows/validate.yml) compiles the workspace and checks selected patch IDs. A successful build is not the same as an exact-APK or runtime test.
 
-| Path | Contents |
-|---|---|
-| `apps/` | App-specific patch source |
-| `patches.json` | Release catalogue and patch metadata |
-| `manifest.toml` | Bundle metadata |
-| `PATCHES.md` | Patch index and implementation notes |
-| `.github/workflows/` | Build validation and release automation |
+## Disclaimer
 
-## Credits & scope
+- This repository contains Reseam patch source and bundle metadata. It does not distribute modified APKs.
+- App names and icons belong to their respective developers and are used to identify patch targets.
+- Compatibility is version-specific. A patch may stop working when its target app changes.
+- Source code in this repository is not automatically included in the latest published bundle. Check the release catalogue before installing.
+- RJ Reseam Patches is an independent community project and is not affiliated with Reseam or the developers of the listed apps. Use patches at your own discretion.
 
-RJ Reseam Patches is an independent community project and is not affiliated with Reseam or the developers of the target apps. App names and artwork belong to their respective owners.
+## License
 
-Patches may stop working after app updates. Review each patch before applying it and keep backups of important data.
+The repository is licensed under [AGPL-3.0-or-later](LICENSE). Third-party components and notices are identified in [NOTICE](NOTICE) and their respective app folders.
 
 ---
 
 <div align="center">
 
-*Maintained by RJ · Built for Reseam.*
+*Maintained by RJ.*
 
 </div>
