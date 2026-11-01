@@ -59,7 +59,7 @@ jobs:
               "app.rj.pinterest.patches.disablePrivacySandboxAdServices",
               "app.rj.pinterest.patches.disableGoogleEngageReceiver",
               "app.rj.hyperlock.patches.removeAds",
-              "app.rj.hyperlock.patches.customizeHyperLock",
+              "app.rj.hyperlock.patches.unlockPremium",
           }
           actual = {patch["id"] for patch in manifest.get("patches", [])}
           missing = expected - actual
