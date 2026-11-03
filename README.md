@@ -12,7 +12,7 @@ A collection of community-made patches for [Reseam](https://reseam.app), maintai
 [![Stars](https://img.shields.io/github/stars/visionxstream99-mod/RJ-reseam-patches?style=for-the-badge&label=Stars&color=E3B341&logo=github&logoColor=white)](https://github.com/visionxstream99-mod/RJ-reseam-patches/stargazers)
 [![Build](https://img.shields.io/github/actions/workflow/status/visionxstream99-mod/RJ-reseam-patches/validate.yml?branch=main&style=for-the-badge&label=Build)](https://github.com/visionxstream99-mod/RJ-reseam-patches/actions/workflows/validate.yml)
 
-<a href="https://raw.githubusercontent.com/visionxstream99-mod/RJ-reseam-patches/main/patches.json" title="Open the RJ patch source index to add in Reseam Manager">
+<a href="https://reseam.app/add/?url=https%3A%2F%2Fgithub.com%2Fvisionxstream99-mod%2FRJ-reseam-patches" title="Add the latest RJ release to Reseam Manager">
   <img alt="Add to Reseam" src="https://img.shields.io/badge/ADD%20TO-RESEAM-00A8FF?style=for-the-badge&logo=android&logoColor=white" height="38">
 </a>
 <a href="https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/latest">
@@ -44,7 +44,7 @@ A collection of community-made patches for [Reseam](https://reseam.app), maintai
 
 <sub>App icons below use the image URLs opened directly from their Google Play listings. Anixart uses the Google Play icon for package `com.swiftsoft.anixartd`.</sub>
 
-The app grid counts source patch declarations. The latest published **v0.1.3** bundle contains **12 patches for ADM, Facebook and JioHotstar**. Anixart, HyperLock and Pinterest are present in the repository source tree but are **not included in that release manifest**.
+The app grid counts patch declarations in the current source. Use the Add to Reseam link above: it points to this repository, so Reseam Manager reads the index attached to the latest release instead of the older `main/patches.json` copy.
 
 ## Full list
 
@@ -129,7 +129,7 @@ These Pinterest controls are limited to the listed manifest changes; they do not
 ## Installing
 
 1. Install [Reseam Manager](https://reseam.app).
-2. Select **[Add RJ Reseam Patches](https://raw.githubusercontent.com/visionxstream99-mod/RJ-reseam-patches/main/patches.json)**.
+2. Select **[Add RJ Reseam Patches](https://reseam.app/add/?url=https%3A%2F%2Fgithub.com%2Fvisionxstream99-mod%2FRJ-reseam-patches)**.
 3. Browse the patches available in the published bundle and choose one compatible with your app version.
 4. Review the patch description and options before applying it.
 
