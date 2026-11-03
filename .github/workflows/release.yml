@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (for example v0.1.0)"
+        description: "Release tag (for example v0.1.5)"
         required: true
-        default: "v0.1.0"
+        default: "v0.1.5"
         type: string
 
 permissions:
@@ -33,6 +33,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid release tag: $RELEASE_TAG (use a tag such as v0.1.5)." >&2
+            exit 1
+          fi
           if [[ "$GITHUB_REF_TYPE" != "tag" ]]; then
             git tag "$RELEASE_TAG" "$GITHUB_SHA"
           fi
@@ -48,12 +52,29 @@ jobs:
         run: |
           mkdir -p engine
           version=$(sed -n 's/.*id("app.reseam.workspace") version "\(.*\)".*/\1/p' settings.gradle.kts)
-          curl -fsSL -o engine/reseam https://cdn.reseam.app/engine/v$version/reseam-linux-x64
+          test -n "$version"
+          echo "RESEAM_ENGINE_VERSION=$version" >> "$GITHUB_ENV"
+          curl -fsSL --retry 3 -o engine/reseam "https://cdn.reseam.app/engine/v${version}/reseam-linux-x64"
           chmod +x engine/reseam
           echo "${{ secrets.BUNDLE_SIGNING_KEY_B64 }}" | base64 -d > bundle-signing.key
 
       - name: Build the bundle
         run: ./gradlew bundle -PreleaseTag="$RELEASE_TAG" --no-daemon
+
+      - name: Verify bundle engine version before publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - "$RESEAM_ENGINE_VERSION" build/reseam/rj-reseam-patches.reseam <<'PY'
+          import sys, tomllib, zipfile
+          expected = sys.argv[1]
+          with zipfile.ZipFile(sys.argv[2]) as archive:
+              manifest = tomllib.loads(archive.read("manifest.toml").decode("utf-8"))
+          actual = manifest.get("bundle", {}).get("engine")
+          if actual != expected:
+              raise SystemExit(f"Bundle engine mismatch: expected {expected}, got {actual}")
+          print(f"Verified bundle engine: {actual}")
+          PY
 
       - name: Publish the release
         run: engine/reseam release patches build/reseam/*.reseam --tag "$RELEASE_TAG"
