@@ -25,7 +25,7 @@ A collection of community-made patches for [Reseam](https://reseam.app), maintai
 
 ## 🧩 Patches list
 
-> **[v0.1.3](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.3)** &nbsp; • &nbsp; `main` &nbsp; • &nbsp; **20 source patches** across **6 apps**
+> **[latest release](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.4%28updated%29)** &nbsp; • &nbsp; `main` &nbsp; • &nbsp; **20 source patches** across **6 apps**
 
 <table>
 <tr>
@@ -52,7 +52,7 @@ The app grid counts patch declarations in the current source. Use the Add to Res
 
 **Package:** `com.dv.adm`  
 **Target:** ADM 14.x  
-**Status:** Included in [v0.1.3](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.3)
+**Status:** Included in [latest release](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.4%28updated%29)
 
 | Patch | Description |
 |---|---|
@@ -62,7 +62,7 @@ The app grid counts patch declarations in the current source. Use the Add to Res
 
 **Package:** `com.swiftsoft.anixartd`  
 **Target:** Anixart 10.5  
-**Status:** Source only — not in v0.1.3
+**Status:** Included in the latest release
 
 | Patch | Description |
 |---|---|
@@ -72,7 +72,7 @@ The app grid counts patch declarations in the current source. Use the Add to Res
 
 **Package:** `com.facebook.katana`  
 **Target:** Package-based compatibility; no version pin in the release metadata  
-**Status:** Included in [v0.1.3](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.3)
+**Status:** Included in [latest release](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.4%28updated%29)
 
 | Patch | Description |
 |---|---|
@@ -85,7 +85,7 @@ The app grid counts patch declarations in the current source. Use the Add to Res
 
 **Package:** `in.startv.hotstar`  
 **Target:** 26.10.12.2  
-**Status:** Included in [v0.1.3](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.3)
+**Status:** Included in [latest release](https://github.com/visionxstream99-mod/RJ-reseam-patches/releases/tag/v0.1.4%28updated%29)
 
 | Patch | Description |
 |---|---|
@@ -101,7 +101,7 @@ The app grid counts patch declarations in the current source. Use the Add to Res
 
 **Package:** `com.appiolab.hyperlockscreenos`  
 **Target:** HyperLock 0.1.2  
-**Status:** Source only — not in v0.1.3
+**Status:** Included in the latest release
 
 | Patch | Description |
 |---|---|
@@ -113,7 +113,7 @@ The app grid counts patch declarations in the current source. Use the Add to Res
 
 **Package:** `com.pinterest`  
 **Target:** Pinterest 14.42.0 (version code 14428010)  
-**Status:** Source only — not in v0.1.3
+**Status:** Included in the latest release
 
 | Patch | Description |
 |---|---|
